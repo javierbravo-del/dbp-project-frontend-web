@@ -1,10 +1,5 @@
 import PropTypes from 'prop-types'
-
-const VARIANTS = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700',
-  secondary: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
-}
+import { buttonClasses } from '../utils/buttonStyles'
 
 export default function Button({
   children,
@@ -12,13 +7,14 @@ export default function Button({
   isLoading = false,
   disabled = false,
   type = 'button',
+  className = '',
   ...props
 }) {
   return (
     <button
       type={type}
       disabled={disabled || isLoading}
-      className={`inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${VARIANTS[variant]}`}
+      className={`${buttonClasses(variant)} ${className}`}
       {...props}
     >
       {isLoading ? 'Procesando...' : children}
@@ -32,4 +28,5 @@ Button.propTypes = {
   isLoading: PropTypes.bool,
   disabled: PropTypes.bool,
   type: PropTypes.oneOf(['button', 'submit', 'reset']),
+  className: PropTypes.string,
 }

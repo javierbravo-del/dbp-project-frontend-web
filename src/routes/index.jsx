@@ -8,6 +8,7 @@ const ProductsPage = lazy(() => import('../pages/ProductsPage'))
 const LoginPage = lazy(() => import('../pages/LoginPage'))
 const DashboardPage = lazy(() => import('../pages/DashboardPage'))
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'))
+const ProductFormPage = lazy(() => import('../pages/ProductFormPage'))
 
 export default function AppRoutes() {
   return (
@@ -19,6 +20,8 @@ export default function AppRoutes() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/products" element={<ProductsPage />} />
+            <Route path="/products/new" element={<ProductFormPage />} />
+            <Route path="/products/:id/edit" element={<ProductFormPage />} />
           </Route>
         </Route>
 
