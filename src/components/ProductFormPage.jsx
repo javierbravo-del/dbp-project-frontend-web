@@ -26,7 +26,7 @@ const toFormValues = (product) => ({
   descripcion: product.descripcion ?? '',
   unidadMedida: product.unidadMedida ?? 'UNIDAD',
   precioCompra: product.precioCompra ?? '',
-  precioVenta: product.precioVenta,
+  precioVenta: product.precioVenta ?? '',
   categoriaId: product.categoriaId ?? '',
 })
 
