@@ -23,9 +23,15 @@ const toPayload = (values) => ({
 export default function SupplierFormPage() {
   const navigate = useNavigate()
 
-  const handleSubmit = async (values) => {
+    const handleSubmit = async (values) => {
     try {
-      await supplierService.create(toPayload(values))
+      const payload = toPayload(values)
+      const existing = await supplierService.getAll({ page: 1, size: 100 })
+      if (existing.content.some((supplier) => supplier.ruc === payload.ruc)) {
+        toast.error('Ya tienes registrado un proveedor con ese RUC')
+        return
+      }
+      await supplierService.create(payload)
       toast.success('Proveedor creado correctamente')
       navigate('/suppliers')
     } catch (error) {
