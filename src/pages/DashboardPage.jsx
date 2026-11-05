@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Banknote, Percent, Receipt, ShoppingBag } from 'lucide-react';
-import useAuth from '../hooks/useAuth';
-import useFetch from '../hooks/useFetch';
+import { useAuth } from '../hooks/useAuth';
+import { useFetch } from '../hooks/useFetch';
 import reportService from '../services/reportService';
 import stockService from '../services/stockService';
 import { getErrorMessage } from '../utils/errors';
