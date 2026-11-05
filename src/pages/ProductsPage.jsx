@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Ban, Pencil, Plus } from 'lucide-react'
+import { Ban, Layers, Pencil, Plus } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../hooks/useAuth'
 import { useFetch } from '../hooks/useFetch'
@@ -51,6 +51,14 @@ const buildColumns = ({ isAdmin, onDeactivate }) => [
     header: 'Acciones',
     render: (product) => (
       <div className="flex items-center gap-1">
+        <Link
+          to={`/products/${product.id}/variants`}
+          title="Variantes y stock"
+          aria-label={`Variantes y stock de ${product.nombre}`}
+          className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
+        >
+          <Layers size={16} />
+        </Link>
         <Link
           to={`/products/${product.id}/edit`}
           title="Editar producto"
