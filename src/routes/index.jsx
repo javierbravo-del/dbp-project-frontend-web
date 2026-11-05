@@ -11,6 +11,8 @@ const NotFoundPage = lazy(() => import('../pages/NotFoundPage'))
 const ProductFormPage = lazy(() => import('../pages/ProductFormPage'))
 const ClientsPage = lazy(() => import('../pages/ClientsPage'))
 const ClientFormPage = lazy(() => import('../pages/ClientFormPage'))
+const SuppliersPage = lazy(() => import('../pages/SuppliersPage'))
+const SupplierFormPage = lazy(() => import('../pages/SupplierFormPage'))
 
 export default function AppRoutes() {
   return (
@@ -27,6 +29,8 @@ export default function AppRoutes() {
             <Route path="/clients" element={<ClientsPage />} />
             <Route path="/clients/new" element={<ClientFormPage />} />
             <Route path="/clients/:id/edit" element={<ClientFormPage />} />
+            <Route path="/suppliers" element={<SuppliersPage />} />
+            <Route path="/suppliers/new" element={<SupplierFormPage />} />
           </Route>
         </Route>
 
