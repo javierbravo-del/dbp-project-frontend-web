@@ -37,7 +37,6 @@ function DashboardPage() {
   const [criterion, setCriterion] = useState('UNIDADES');
   const { desde, hasta } = range;
 
-  // Los fetchers DEBEN estar memoizados para que useFetch no entre en bucle
   const fetchSummary = useCallback(
     (signal) => reportService.getSummary({ desde, hasta }, signal),
     [desde, hasta],
@@ -52,8 +51,6 @@ function DashboardPage() {
   );
   const fetchLowStock = useCallback((signal) => stockService.getLowStock({ size: 5 }, signal), []);
 
-  // Los hooks no pueden ser condicionales, así que para EMPLEADO pedimos solo stock bajo
-  // y las llamadas de reportes devuelven null sin pegarle al backend (evita 403)
   const summary = useFetch(
     useCallback((s) => (isAdmin ? fetchSummary(s) : Promise.resolve(null)), [isAdmin, fetchSummary]),
   );
