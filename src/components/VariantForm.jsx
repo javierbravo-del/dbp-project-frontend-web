@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import Button from './Button'
 import Input from './Input'
 
-const EMPTY_VALUES = { talla: '', color: '', sku: '', stockMinimo: '' }
+const EMPTY_VALUES = { talla: '', color: '', sku: '', stockMinimo: '', stockInicial: '' }
 
 const toNullableNumber = (value) => (value === '' || value === null ? null : Number(value))
 
@@ -29,7 +29,7 @@ export default function VariantForm({ onSubmit }) {
       className="space-y-4 rounded-2xl bg-white p-6 shadow-sm"
     >
       <h2 className="text-base font-semibold text-gray-900">Nueva variante</h2>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Input
           label="Talla"
           placeholder="Ej: M"
@@ -42,11 +42,7 @@ export default function VariantForm({ onSubmit }) {
           error={errors.color?.message}
           {...register('color', { required: 'El color es obligatorio' })}
         />
-        <Input
-          label="SKU"
-          placeholder="Opcional"
-          {...register('sku')}
-        />
+        <Input label="SKU" placeholder="Opcional" {...register('sku')} />
         <Input
           label="Stock mínimo"
           type="number"
@@ -59,6 +55,22 @@ export default function VariantForm({ onSubmit }) {
             setValueAs: toNullableNumber,
             validate: (value) =>
               value === null || value >= 0 || 'El stock mínimo no puede ser negativo',
+          })}
+        />
+        <Input
+          label="Stock inicial"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="0"
+          hint="Opcional. Unidades que ya tienes."
+          error={errors.stockInicial?.message}
+          {...register('stockInicial', {
+            setValueAs: toNullableNumber,
+            validate: (value) =>
+              value === null ||
+              (Number.isInteger(value) && value >= 0) ||
+              'Debe ser un número entero, 0 o mayor',
           })}
         />
       </div>
