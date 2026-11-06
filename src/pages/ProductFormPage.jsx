@@ -51,16 +51,17 @@ export default function ProductFormPage() {
     { label: title },
   ]
 
-  const handleSubmit = async (values) => {
+    const handleSubmit = async (values) => {
     try {
       if (isEditing) {
         await productService.update(id, values)
         toast.success('Producto actualizado correctamente')
+        navigate('/products')
       } else {
-        await productService.create(values)
-        toast.success('Producto creado correctamente')
+        const created = await productService.create(values)
+        toast.success('Producto creado. Ahora agrega sus tallas y colores')
+        navigate(`/products/${created.id}/variants`)
       }
-      navigate('/products')
     } catch (error) {
       toast.error(getErrorMessage(error))
     }

@@ -88,15 +88,33 @@ export default function ProductVariantsPage() {
   }
 
   const handleCreateVariant = async (values) => {
+    let created
     try {
-      await variantService.create(id, toVariantPayload(values))
-      toast.success('Variante creada correctamente')
-      variants.refetch()
-      return true
+      created = await variantService.create(id, toVariantPayload(values))
     } catch (error) {
       toast.error(getErrorMessage(error))
       return false
     }
+
+    if (values.stockInicial > 0) {
+      try {
+        await stockService.registerInbound({
+          varianteId: created.id,
+          cantidad: values.stockInicial,
+          motivo: 'Stock inicial',
+        })
+        toast.success(`Variante creada con ${values.stockInicial} unidades de stock`)
+      } catch (error) {
+        toast.error(
+          `La variante se creó, pero no se pudo registrar el stock: ${getErrorMessage(error)}`,
+        )
+      }
+    } else {
+      toast.success('Variante creada correctamente')
+    }
+
+    variants.refetch()
+    return true
   }
 
   const handleStockEntry = async ({ cantidad, motivo }) => {
