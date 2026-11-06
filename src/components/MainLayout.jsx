@@ -1,15 +1,31 @@
 import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { LogOut, Menu } from 'lucide-react'
+import ErrorBoundary from './ErrorBoundary'
 import Sidebar from './Sidebar'
 import { useAuth } from '../hooks/useAuth'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { NAV_ITEMS } from '../routes/navigation'
 
 export default function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const { user, logout } = useAuth()
+  const { pathname } = useLocation()
+
+  const currentItem = NAV_ITEMS.find((item) =>
+    item.end ? pathname === item.to : pathname.startsWith(item.to),
+  )
+  useDocumentTitle(currentItem?.label)
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-blue-700 focus:shadow"
+      >
+        Saltar al contenido
+      </a>
+
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <div className="lg:pl-64">
@@ -39,8 +55,10 @@ export default function MainLayout() {
           </div>
         </header>
 
-        <main className="p-4 sm:p-6">
-          <Outlet />
+        <main id="main-content" tabIndex={-1} className="p-4 outline-none sm:p-6">
+          <ErrorBoundary key={pathname}>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
     </div>
