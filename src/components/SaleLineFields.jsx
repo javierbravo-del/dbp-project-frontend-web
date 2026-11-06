@@ -17,7 +17,9 @@ export default function SaleLineFields({
   setValue,
   canRemove,
   onRemove,
+  mode = 'sale',
 }) {
+  const isSale = mode === 'sale'
   const productId = watch(`detalles.${index}.productoId`)
   const variantId = watch(`detalles.${index}.varianteId`)
   const quantity = Number(watch(`detalles.${index}.cantidad`)) || 0
@@ -38,8 +40,14 @@ export default function SaleLineFields({
 
   const handleProductChange = (event) => {
     const product = products.find((item) => String(item.id) === event.target.value)
+    const suggestedPrice = isSale ? product?.precioVenta : product?.precioCompra
     setValue(`detalles.${index}.varianteId`, '')
-    setValue(`detalles.${index}.precioUnitario`, product ? product.precioVenta : '')
+    setValue(`detalles.${index}.precioUnitario`, suggestedPrice ?? '')
+  }
+
+  const stockLabel = (variant) => {
+    if (variant.stock > 0) return `stock ${variant.stock}`
+    return isSale ? 'agotado' : 'sin stock'
   }
 
   return (
@@ -72,10 +80,8 @@ export default function SaleLineFields({
           >
             <option value="">{variants.isLoading ? 'Cargando...' : 'Selecciona...'}</option>
             {options.map((variant) => (
-              <option key={variant.id} value={variant.id} disabled={variant.stock <= 0}>
-                {`Talla ${variant.talla} · ${variant.color} (${
-                  variant.stock > 0 ? `stock ${variant.stock}` : 'agotado'
-                })`}
+              <option key={variant.id} value={variant.id} disabled={isSale && variant.stock <= 0}>
+                {`Talla ${variant.talla} · ${variant.color} (${stockLabel(variant)})`}
               </option>
             ))}
           </Select>
@@ -93,7 +99,9 @@ export default function SaleLineFields({
               validate: (value) => {
                 const amount = Number(value)
                 if (!Number.isInteger(amount) || amount < 1) return 'Entero mayor a 0'
-                if (selected && amount > selected.stock) return `Solo hay ${selected.stock}`
+                if (isSale && selected && amount > selected.stock) {
+                  return `Solo hay ${selected.stock}`
+                }
                 return true
               },
             })}
@@ -102,7 +110,7 @@ export default function SaleLineFields({
 
         <div className="md:col-span-2">
           <Input
-            label="Precio (S/)"
+            label={isSale ? 'Precio (S/)' : 'Costo (S/)'}
             type="number"
             min="0"
             step="0.01"
@@ -157,4 +165,5 @@ SaleLineFields.propTypes = {
   setValue: PropTypes.func.isRequired,
   canRemove: PropTypes.bool.isRequired,
   onRemove: PropTypes.func.isRequired,
+  mode: PropTypes.oneOf(['sale', 'purchase']),
 }
