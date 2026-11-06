@@ -174,7 +174,7 @@ export default function CategoriesPage() {
       <ConfirmDialog
         isOpen={Boolean(categoryToDeactivate)}
         title="Desactivar categoría"
-        message={`¿Desactivar "${categoryToDeactivate?.nombre ?? ''}"? Ya no aparecerá al crear productos nuevos. Los productos que ya la usan la conservan.`}
+        message={`¿Desactivar "${categoryToDeactivate?.nombre ?? ''}"? Ya no aparecerá al crear productos nuevos y no se puede volver a activar. Los productos que ya la usan la conservan.`}
         confirmLabel="Desactivar"
         isLoading={isDeactivating}
         onConfirm={handleConfirmDeactivate}
