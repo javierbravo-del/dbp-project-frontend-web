@@ -52,11 +52,16 @@ export default function ProductForm({ defaultValues, categories, onSubmit, submi
           {...register('categoriaId', { setValueAs: toNullableNumber })}
         >
           <option value="">Sin categoría</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.nombre}
-            </option>
-          ))}
+          {categories
+            .filter(
+              (category) =>
+                category.activo !== false || String(category.id) === String(defaultValues.categoriaId),
+            )
+            .map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.nombre}
+              </option>
+            ))}
         </Select>
 
         <Select label="Unidad de medida" {...register('unidadMedida')}>

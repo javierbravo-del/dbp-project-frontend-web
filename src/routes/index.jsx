@@ -21,6 +21,8 @@ const PurchasesPage = lazy(() => import('../pages/PurchasesPage'))
 const PurchaseFormPage = lazy(() => import('../pages/PurchaseFormPage'))
 const PurchaseDetailPage = lazy(() => import('../pages/PurchaseDetailPage'))
 const RegisterPage = lazy(() => import('../pages/RegisterPage'))
+const CategoriesPage = lazy(() => import('../pages/CategoriesPage'))
+const CategoryFormPage = lazy(() => import('../pages/CategoryFormPage'))
 
 export default function AppRoutes() {
   return (
@@ -47,6 +49,9 @@ export default function AppRoutes() {
             <Route path="/purchases" element={<PurchasesPage />} />
             <Route path="/purchases/new" element={<PurchaseFormPage />} />
             <Route path="/purchases/:id" element={<PurchaseDetailPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/categories/new" element={<CategoryFormPage />} />
+            <Route path="/categories/:id/edit" element={<CategoryFormPage />} />
           </Route>
         </Route>
 
