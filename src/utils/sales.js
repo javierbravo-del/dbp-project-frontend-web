@@ -16,3 +16,9 @@ export const SALES_CHANNELS = [
 
 export const labelOf = (options, value) =>
   options.find((option) => option.value === value)?.label ?? value ?? '—'
+
+export const ORDER_STATUS_BADGES = {
+  COMPLETADA: { variant: 'success', label: 'Completada' },
+  PENDIENTE: { variant: 'warning', label: 'Pendiente' },
+  ANULADA: { variant: 'danger', label: 'Anulada' },
+}

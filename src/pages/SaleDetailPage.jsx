@@ -11,6 +11,7 @@ import DataTable from '../components/DataTable'
 import ErrorState from '../components/ErrorState'
 import PageHeader from '../components/PageHeader'
 import Spinner from '../components/Spinner'
+import InfoItem from '../components/InfoItem'
 
 const LINE_COLUMNS = [
   { key: 'varianteDescripcion', header: 'Producto' },
@@ -22,15 +23,6 @@ const LINE_COLUMNS = [
   },
   { key: 'subtotal', header: 'Subtotal', render: (line) => formatCurrency(line.subtotal) },
 ]
-
-function InfoItem({ label, children }) {
-  return (
-    <div>
-      <dt className="text-xs font-medium uppercase text-gray-500">{label}</dt>
-      <dd className="mt-1 text-sm font-medium text-gray-900">{children}</dd>
-    </div>
-  )
-}
 
 export default function SaleDetailPage() {
   const { id } = useParams()
