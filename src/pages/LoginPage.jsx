@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { useAuth } from '../hooks/useAuth'
 import { getErrorMessage } from '../utils/errors'
@@ -62,6 +62,12 @@ export default function LoginPage() {
         <Button type="submit" isLoading={isSubmitting} className="w-full">
           Ingresar
         </Button>
+        <p className="text-center text-sm text-gray-600">
+          ¿Aún no tienes cuenta?{' '}
+          <Link to="/register" className="font-semibold text-blue-600 hover:underline">
+            Regístrate
+          </Link>
+        </p>
       </form>
     </main>
   )

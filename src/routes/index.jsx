@@ -20,12 +20,14 @@ const SaleDetailPage = lazy(() => import('../pages/SaleDetailPage'))
 const PurchasesPage = lazy(() => import('../pages/PurchasesPage'))
 const PurchaseFormPage = lazy(() => import('../pages/PurchaseFormPage'))
 const PurchaseDetailPage = lazy(() => import('../pages/PurchaseDetailPage'))
+const RegisterPage = lazy(() => import('../pages/RegisterPage'))
 
 export default function AppRoutes() {
   return (
     <Suspense fallback={<Spinner fullScreen />}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
