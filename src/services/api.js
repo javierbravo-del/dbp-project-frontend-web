@@ -2,6 +2,8 @@ import axios from 'axios'
 import { tokenStorage } from '../utils/tokenStorage'
 
 const API_URL = import.meta.env.VITE_API_URL
+const MAX_RETRIES = 2
+const RETRY_DELAY_MS = 800
 
 const api = axios.create({
   baseURL: API_URL,
@@ -16,6 +18,16 @@ api.interceptors.request.use((config) => {
   }
   return config
 })
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const isRetryable = (error) => {
+  const config = error.config
+  if (!config || config.method !== 'get' || error.code === 'ERR_CANCELED') {
+    return false
+  }
+  return !error.response || error.response.status >= 500
+}
 
 let refreshPromise = null
 
@@ -32,6 +44,15 @@ const refreshAccessToken = async () => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    if (isRetryable(error)) {
+      const config = error.config
+      config._retryCount = (config._retryCount ?? 0) + 1
+      if (config._retryCount <= MAX_RETRIES) {
+        await wait(RETRY_DELAY_MS * config._retryCount)
+        return api(config)
+      }
+    }
+
     const originalRequest = error.config
     const isUnauthorized = error.response?.status === 401
     const isAuthRoute = originalRequest?.url?.startsWith('/auth/')
