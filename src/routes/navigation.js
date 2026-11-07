@@ -1,4 +1,4 @@
-import { ClipboardList, LayoutDashboard, Package, ShoppingCart, Tags, Truck, Users } from 'lucide-react'
+import { Bot, ClipboardList, LayoutDashboard, Package, ShoppingCart, Tags, Truck, Users } from 'lucide-react'
 
 export const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -8,4 +8,5 @@ export const NAV_ITEMS = [
   { to: '/purchases', label: 'Compras', icon: ClipboardList },
   { to: '/clients', label: 'Clientes', icon: Users },
   { to: '/suppliers', label: 'Proveedores', icon: Truck },
+  { to: '/assistant', label: 'Asistente', icon: Bot },
 ]
