@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Ban, Layers, Pencil, Plus } from 'lucide-react'
+import { Ban, DollarSign, Layers, Pencil, Plus } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../hooks/useAuth'
 import { useFetch } from '../hooks/useFetch'
@@ -17,12 +17,13 @@ import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
 import PageHeader from '../components/PageHeader'
 import Pagination from '../components/Pagination'
+import PriceDialog from '../components/PriceDialog'
 import SearchInput from '../components/SearchInput'
 import Spinner from '../components/Spinner'
 
 const BREADCRUMBS = [{ label: 'Dashboard', to: '/' }, { label: 'Productos' }]
 
-const buildColumns = ({ isAdmin, onDeactivate }) => [
+const buildColumns = ({ isAdmin, onDeactivate, onEditPrice }) => [
   { key: 'codigo', header: 'Código', sortKey: 'codigo' },
   { key: 'nombre', header: 'Producto', sortKey: 'nombre' },
   {
@@ -59,6 +60,15 @@ const buildColumns = ({ isAdmin, onDeactivate }) => [
         >
           <Layers size={16} />
         </Link>
+        <button
+          type="button"
+          title="Cambiar precio"
+          aria-label={`Cambiar precio de ${product.nombre}`}
+          onClick={() => onEditPrice(product)}
+          className="rounded-lg p-2 text-green-700 hover:bg-green-50"
+        >
+          <DollarSign size={16} />
+        </button>
         <Link
           to={`/products/${product.id}/edit`}
           title="Editar producto"
@@ -90,6 +100,7 @@ export default function ProductsPage() {
   })
   const [showInactive, setShowInactive] = useState(false)
   const [productToDeactivate, setProductToDeactivate] = useState(null)
+  const [productToReprice, setProductToReprice] = useState(null)
   const [isDeactivating, setIsDeactivating] = useState(false)
   const debouncedSearch = useDebounce(search, 300)
 
@@ -101,7 +112,12 @@ export default function ProductsPage() {
   const { data, error, isLoading, refetch } = useFetch(fetchProducts)
 
   const columns = useMemo(
-    () => buildColumns({ isAdmin, onDeactivate: setProductToDeactivate }),
+    () =>
+      buildColumns({
+        isAdmin,
+        onDeactivate: setProductToDeactivate,
+        onEditPrice: setProductToReprice,
+      }),
     [isAdmin],
   )
 
@@ -138,6 +154,17 @@ export default function ProductsPage() {
       toast.error(getErrorMessage(deactivateError))
     } finally {
       setIsDeactivating(false)
+    }
+  }
+
+  const handleReprice = async (precioVenta) => {
+    try {
+      await productService.patch(productToReprice.id, { precioVenta })
+      toast.success(`Precio de "${productToReprice.nombre}" actualizado`)
+      setProductToReprice(null)
+      refetch()
+    } catch (repriceError) {
+      toast.error(getErrorMessage(repriceError))
     }
   }
 
@@ -215,6 +242,12 @@ export default function ProductsPage() {
         isLoading={isDeactivating}
         onConfirm={handleConfirmDeactivate}
         onCancel={() => setProductToDeactivate(null)}
+      />
+
+      <PriceDialog
+        product={productToReprice}
+        onSubmit={handleReprice}
+        onCancel={() => setProductToReprice(null)}
       />
     </section>
   )
