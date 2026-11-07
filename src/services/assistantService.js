@@ -1,8 +1,8 @@
 import api from './api'
 
 export const assistantService = {
-  async ask(pregunta) {
-    const { data } = await api.post('/assistant', { pregunta }, { timeout: 60000 })
+    async ask(pregunta) {
+    const { data } = await api.post('/assistant', { pregunta }, { timeout: 120000 })
     return data
   },
 
