@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { Plus } from 'lucide-react'
 import { formatCurrency } from '../utils/format'
 import { PAYMENT_METHODS, SALES_CHANNELS } from '../utils/sales'
@@ -28,7 +28,7 @@ export default function SaleForm({ products, clients, onSubmit }) {
   } = useForm({ defaultValues: DEFAULT_VALUES, mode: 'onChange' })
   const { fields, append, remove } = useFieldArray({ control, name: 'detalles' })
 
-  const lines = watch('detalles')
+  const lines = useWatch({ control, name: 'detalles' })
   const total = lines.reduce(
     (sum, line) => sum + (Number(line.cantidad) || 0) * (Number(line.precioUnitario) || 0),
     0,
