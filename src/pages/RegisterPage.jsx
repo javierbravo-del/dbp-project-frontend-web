@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, Navigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
@@ -10,7 +10,7 @@ import Input from '../components/Input'
 
 export default function RegisterPage() {
   const { register: registerUser, isAuthenticated } = useAuth()
-  const createdEnterpriseId = useRef(null)
+  const [createdEnterpriseId, setCreatedEnterpriseId] = useState(null)
 
   const {
     register,
@@ -23,20 +23,22 @@ export default function RegisterPage() {
     return <Navigate to="/" replace />
   }
 
-  const onSubmit = async (values) => {
+    const onSubmit = async (values) => {
     try {
-      if (!createdEnterpriseId.current) {
+      let enterpriseId = createdEnterpriseId
+      if (!enterpriseId) {
         const enterprise = await enterpriseService.create({
           ruc: values.ruc.trim(),
           razonSocial: values.razonSocial.trim(),
         })
-        createdEnterpriseId.current = enterprise.id
+        enterpriseId = enterprise.id
+        setCreatedEnterpriseId(enterpriseId)
       }
       await registerUser({
         nombre: values.nombre.trim(),
         email: values.email.trim(),
         password: values.password,
-        enterpriseId: createdEnterpriseId.current,
+        enterpriseId,
       })
       toast.success('Cuenta creada. ¡Bienvenido!')
     } catch (error) {
