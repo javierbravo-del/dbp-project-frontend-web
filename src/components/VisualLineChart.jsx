@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { AXIS_TICK, GRID_STROKE, TOOLTIP_STYLE } from '../utils/chartTheme'
 import { formatAxisValue, formatVisualValue } from '../utils/visuals'
 import VisualCard from './VisualCard'
 
@@ -19,14 +20,14 @@ export default function VisualLineChart({ title, points, format }) {
       <div className="h-64 w-full" role="img" aria-label={title || 'Gráfico de líneas'}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={points} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={GRID_STROKE} />
+            <XAxis dataKey="label" tick={AXIS_TICK} />
             <YAxis
-              tick={{ fontSize: 12 }}
+              tick={AXIS_TICK}
               width={72}
               tickFormatter={(value) => formatAxisValue(value, format)}
             />
-            <Tooltip formatter={(value) => [formatVisualValue(value, format), 'Valor']} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(value) => [formatVisualValue(value, format), 'Valor']} />
             <Line
               type="monotone"
               dataKey="value"

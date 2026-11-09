@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { LogOut, Menu } from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
 import Sidebar from './Sidebar'
+import ThemeToggle from './ThemeToggle'
 import { useAuth } from '../hooks/useAuth'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { NAV_ITEMS } from '../routes/navigation'
@@ -40,6 +41,7 @@ export default function MainLayout() {
           </button>
 
           <div className="ml-auto flex items-center gap-4">
+            <ThemeToggle />
             <div className="text-right text-sm">
               <p className="font-semibold text-gray-900">{user.nombre}</p>
               <p className="text-gray-500">{user.role}</p>

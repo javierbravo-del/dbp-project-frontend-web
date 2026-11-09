@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import FeatureCard from '../components/FeatureCard'
+import ThemeToggle from '../components/ThemeToggle'
 
 const BRAND = 'Gamarrito ERP'
 
@@ -93,7 +94,7 @@ const pillBase =
   'inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-colors'
 
 const navPill =
-  'inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold transition-colors sm:text-sm'
+  'inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold transition-colors sm:px-4 sm:text-sm'
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuth()
@@ -101,6 +102,9 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <div className="fixed bottom-4 right-4 z-20">
+        <ThemeToggle />
+      </div>
       <section className="relative overflow-hidden bg-linear-to-br from-slate-950 via-brand-900 to-sky-800 text-white">
         <div
           aria-hidden="true"
@@ -109,12 +113,12 @@ export default function LandingPage() {
 
         <header className="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-5">
           <Link to="/" className="flex items-center gap-2 whitespace-nowrap text-base font-bold sm:text-lg">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-400/20 text-sky-300">
+            <span className="hidden h-9 w-9 items-center justify-center rounded-full bg-sky-400/20 text-sky-300 sm:flex">
               <ChevronsRight size={20} aria-hidden="true" />
             </span>
             {BRAND}
           </Link>
-          <nav aria-label="Acceso" className="flex items-center gap-2">
+          <nav aria-label="Acceso" className="flex items-center gap-1.5 sm:gap-2">
             {isAuthenticated ? (
               <Link to="/dashboard" className={`${navPill} bg-sky-500 hover:bg-sky-400`}>
                 Ir al panel
