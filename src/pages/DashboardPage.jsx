@@ -28,7 +28,7 @@ const CRITERIA = [
 ];
 
 const selectClasses =
-  'rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200';
+  'rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200';
 
 function DashboardPage() {
   const { user, isAdmin } = useAuth();
@@ -194,7 +194,7 @@ function DashboardPage() {
         isEmpty={lowStockItems.length === 0}
         emptyText="Todo el inventario está por encima del mínimo 🎉"
         action={
-          <Link to="/products" className="text-sm font-medium text-blue-600 hover:underline">
+          <Link to="/products" className="text-sm font-medium text-brand-600 hover:underline">
             Ver productos
           </Link>
         }

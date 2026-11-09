@@ -40,7 +40,7 @@ export default function ClientFormPage() {
 
   const title = isEditing ? 'Editar cliente' : 'Nuevo cliente'
   const breadcrumbs = [
-    { label: 'Dashboard', to: '/' },
+    { label: 'Dashboard', to: '/dashboard' },
     { label: 'Clientes', to: '/clients' },
     { label: title },
   ]

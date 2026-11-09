@@ -21,7 +21,7 @@ import PriceDialog from '../components/PriceDialog'
 import SearchInput from '../components/SearchInput'
 import Spinner from '../components/Spinner'
 
-const BREADCRUMBS = [{ label: 'Dashboard', to: '/' }, { label: 'Productos' }]
+const BREADCRUMBS = [{ label: 'Dashboard', to: '/dashboard' }, { label: 'Productos' }]
 
 const buildColumns = ({ isAdmin, onDeactivate, onEditPrice }) => [
   { key: 'codigo', header: 'Código', sortKey: 'codigo' },
@@ -56,7 +56,7 @@ const buildColumns = ({ isAdmin, onDeactivate, onEditPrice }) => [
           to={`/products/${product.id}/variants`}
           title="Variantes y stock"
           aria-label={`Variantes y stock de ${product.nombre}`}
-          className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
+          className="rounded-lg p-2 text-brand-600 hover:bg-brand-50"
         >
           <Layers size={16} />
         </Link>

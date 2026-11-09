@@ -9,7 +9,7 @@ import Input from '../components/Input'
 export default function LoginPage() {
   const { login, isAuthenticated } = useAuth()
   const location = useLocation()
-  const redirectTo = location.state?.from?.pathname ?? '/'
+  const redirectTo = location.state?.from?.pathname ?? '/dashboard'
 
   const {
     register,
@@ -64,7 +64,7 @@ export default function LoginPage() {
         </Button>
         <p className="text-center text-sm text-gray-600">
           ¿Aún no tienes cuenta?{' '}
-          <Link to="/register" className="font-semibold text-blue-600 hover:underline">
+          <Link to="/register" className="font-semibold text-brand-600 hover:underline">
             Regístrate
           </Link>
         </p>

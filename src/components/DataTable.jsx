@@ -35,7 +35,7 @@ export default function DataTable({ columns, rows, sort, onSortChange, isLoading
                     <button
                       type="button"
                       onClick={() => onSortChange(column.sortKey)}
-                      className="inline-flex items-center gap-1 hover:text-blue-600"
+                      className="inline-flex items-center gap-1 hover:text-brand-600"
                     >
                       {column.header}
                       <SortIcon size={14} />

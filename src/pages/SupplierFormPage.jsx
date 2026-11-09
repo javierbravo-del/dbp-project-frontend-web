@@ -8,7 +8,7 @@ import SupplierForm from '../components/SupplierForm'
 const EMPTY_VALUES = { ruc: '', razonSocial: '', telefono: '', correo: '' }
 
 const BREADCRUMBS = [
-  { label: 'Dashboard', to: '/' },
+  { label: 'Dashboard', to: '/dashboard' },
   { label: 'Proveedores', to: '/suppliers' },
   { label: 'Nuevo proveedor' },
 ]

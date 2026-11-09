@@ -24,7 +24,7 @@ export default function Sidebar({ isOpen, onClose }) {
         }`}
       >
         <div className="mb-6 flex items-center justify-between">
-          <span className="text-lg font-bold text-blue-700">Tienda Clara</span>
+          <span className="text-lg font-bold text-brand-700">Gamarrito ERP</span>
           <button
             type="button"
             onClick={onClose}
@@ -44,7 +44,7 @@ export default function Sidebar({ isOpen, onClose }) {
               onClick={onClose}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium ${
-                  isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'
+                  isActive ? 'bg-brand-50 text-brand-700' : 'text-gray-700 hover:bg-gray-100'
                 }`
               }
             >

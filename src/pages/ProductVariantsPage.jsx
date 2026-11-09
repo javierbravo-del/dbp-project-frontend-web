@@ -50,7 +50,7 @@ const buildColumns = ({ onAddStock }) => [
         title="Registrar entrada de stock"
         aria-label={`Registrar entrada de stock para talla ${variant.talla} ${variant.color}`}
         onClick={() => onAddStock(variant)}
-        className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
+        className="rounded-lg p-2 text-brand-600 hover:bg-brand-50"
       >
         <PackagePlus size={16} />
       </button>
@@ -75,7 +75,7 @@ export default function ProductVariantsPage() {
 
   const productName = product.data?.nombre ?? 'Producto'
   const breadcrumbs = [
-    { label: 'Dashboard', to: '/' },
+    { label: 'Dashboard', to: '/dashboard' },
     { label: 'Productos', to: '/products' },
     { label: productName },
     { label: 'Variantes y stock' },

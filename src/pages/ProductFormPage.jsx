@@ -46,7 +46,7 @@ export default function ProductFormPage() {
 
   const title = isEditing ? 'Editar producto' : 'Nuevo producto'
   const breadcrumbs = [
-    { label: 'Dashboard', to: '/' },
+    { label: 'Dashboard', to: '/dashboard' },
     { label: 'Productos', to: '/products' },
     { label: title },
   ]

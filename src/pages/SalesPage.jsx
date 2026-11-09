@@ -18,7 +18,7 @@ import PageHeader from '../components/PageHeader'
 import Pagination from '../components/Pagination'
 import Spinner from '../components/Spinner'
 
-const BREADCRUMBS = [{ label: 'Dashboard', to: '/' }, { label: 'Ventas' }]
+const BREADCRUMBS = [{ label: 'Dashboard', to: '/dashboard' }, { label: 'Ventas' }]
 
 const STATUS_BADGES = {
   COMPLETADA: { variant: 'success', label: 'Completada' },
@@ -70,7 +70,7 @@ const COLUMNS = [
         to={`/sales/${sale.id}`}
         title="Ver detalle"
         aria-label={`Ver detalle de la venta ${sale.id}`}
-        className="inline-flex rounded-lg p-2 text-blue-600 hover:bg-blue-50"
+        className="inline-flex rounded-lg p-2 text-brand-600 hover:bg-brand-50"
       >
         <Eye size={16} />
       </Link>

@@ -19,7 +19,7 @@ function SalesBarChart({ data }) {
           <XAxis dataKey="grupo" tick={{ fontSize: 12 }} />
           <YAxis tick={{ fontSize: 12 }} width={70} tickFormatter={(v) => `S/ ${v}`} />
           <Tooltip formatter={(value) => [formatCurrency(value), 'Total vendido']} />
-          <Bar dataKey="total" fill="#2563eb" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="total" fill="#1f5ae0" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

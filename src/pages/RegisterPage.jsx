@@ -20,7 +20,7 @@ export default function RegisterPage() {
   } = useForm({ mode: 'onChange' })
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/dashboard" replace />
   }
 
     const onSubmit = async (values) => {
@@ -132,7 +132,7 @@ export default function RegisterPage() {
 
         <p className="text-center text-sm text-gray-600">
           ¿Ya tienes cuenta?{' '}
-          <Link to="/login" className="font-semibold text-blue-600 hover:underline">
+          <Link to="/login" className="font-semibold text-brand-600 hover:underline">
             Inicia sesión
           </Link>
         </p>

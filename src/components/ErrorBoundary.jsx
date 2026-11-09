@@ -41,7 +41,7 @@ export default class ErrorBoundary extends Component {
           </button>
           <a
             href="/"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
           >
             Ir al inicio
           </a>

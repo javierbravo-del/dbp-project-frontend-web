@@ -5,10 +5,11 @@ import toast from 'react-hot-toast'
 import { useFetch } from '../hooks/useFetch'
 import { assistantService } from '../services/assistantService'
 import { getErrorMessage } from '../utils/errors'
+import AssistantVisual from '../components/AssistantVisual'
 import PageHeader from '../components/PageHeader'
 import Spinner from '../components/Spinner'
 
-const BREADCRUMBS = [{ label: 'Dashboard', to: '/' }, { label: 'Asistente' }]
+const BREADCRUMBS = [{ label: 'Dashboard', to: '/dashboard' }, { label: 'Asistente' }]
 const MAX_LENGTH = 500
 
 const SUGGESTIONS = [
@@ -20,18 +21,23 @@ const SUGGESTIONS = [
 function MessageBubble({ message }) {
   const isUser = message.role === 'user'
   const bubbleClasses = isUser
-    ? 'bg-blue-600 text-white'
+    ? 'bg-brand-600 text-white'
     : message.failed
       ? 'bg-red-50 text-red-700'
       : 'bg-gray-100 text-gray-900'
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex flex-col gap-2 ${isUser ? 'items-end' : 'items-start'}`}>
       <p
         className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm ${bubbleClasses}`}
       >
         {message.text}
       </p>
+      {!isUser && message.visual && (
+        <div className="w-full max-w-[95%]">
+          <AssistantVisual visual={message.visual} />
+        </div>
+      )}
     </div>
   )
 }
@@ -41,6 +47,7 @@ MessageBubble.propTypes = {
     role: PropTypes.oneOf(['user', 'assistant']).isRequired,
     text: PropTypes.string.isRequired,
     failed: PropTypes.bool,
+    visual: PropTypes.object,
   }).isRequired,
 }
 
@@ -89,7 +96,12 @@ export default function AssistantPage() {
       const answer = await assistantService.ask(question)
       setSessionMessages((current) => [
         ...current,
-        { id: `${messageId}-a`, role: 'assistant', text: answer.respuesta },
+        {
+          id: `${messageId}-a`,
+          role: 'assistant',
+          text: answer.respuesta,
+          visual: answer.visual,
+        },
       ])
       setRemaining(answer.consultasRestantesHoy)
     } catch (error) {
@@ -173,13 +185,13 @@ export default function AssistantPage() {
               placeholder="Escribe tu pregunta..."
               aria-label="Tu pregunta"
               disabled={isSending}
-              className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-gray-50"
+              className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 disabled:bg-gray-50"
             />
             <button
               type="submit"
               disabled={isSending || !draft.trim()}
               aria-label="Enviar pregunta"
-              className="rounded-lg bg-blue-600 p-3 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-lg bg-brand-600 p-3 text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Send size={18} />
             </button>
