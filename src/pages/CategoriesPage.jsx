@@ -74,10 +74,11 @@ export default function CategoriesPage() {
   const [categoryToDeactivate, setCategoryToDeactivate] = useState(null)
   const [isDeactivating, setIsDeactivating] = useState(false)
   const debouncedSearch = useDebounce(search, 300)
+  const searchTerm = debouncedSearch.trim()
 
   const fetchCategories = useCallback(
-    (signal) => categoryService.getPage({ page, size, sort }, signal),
-    [page, size, sort],
+    (signal) => categoryService.getPage({ page, size, sort, search: searchTerm }, signal),
+    [page, size, sort, searchTerm],
   )
   const { data, error, isLoading, refetch } = useFetch(fetchCategories)
 
@@ -85,13 +86,6 @@ export default function CategoriesPage() {
     () => buildColumns({ isAdmin, onDeactivate: setCategoryToDeactivate }),
     [isAdmin],
   )
-
-  const categories = useMemo(() => {
-    const rows = data?.content ?? []
-    const term = debouncedSearch.trim().toLowerCase()
-    if (!term) return rows
-    return rows.filter((category) => category.nombre.toLowerCase().includes(term))
-  }, [data, debouncedSearch])
 
   const handleSort = (field) => {
     const [currentField, currentDirection] = sort.split(',')
@@ -120,6 +114,14 @@ export default function CategoriesPage() {
     if (!data) {
       return <Spinner />
     }
+    if (data.totalElements === 0 && searchTerm) {
+      return (
+        <EmptyState
+          title="Sin resultados"
+          description={`No encontramos categorías que coincidan con "${searchTerm}".`}
+        />
+      )
+    }
     if (data.totalElements === 0) {
       return (
         <EmptyState
@@ -129,18 +131,10 @@ export default function CategoriesPage() {
         />
       )
     }
-    if (categories.length === 0 && debouncedSearch.trim()) {
-      return (
-        <EmptyState
-          title="Sin resultados"
-          description={`No encontramos categorías que coincidan con "${debouncedSearch}" en esta página.`}
-        />
-      )
-    }
     return (
       <DataTable
         columns={columns}
-        rows={categories}
+        rows={data.content}
         sort={sort}
         onSortChange={handleSort}
         isLoading={isLoading}

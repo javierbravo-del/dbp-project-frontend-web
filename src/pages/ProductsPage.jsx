@@ -103,11 +103,15 @@ export default function ProductsPage() {
   const [productToReprice, setProductToReprice] = useState(null)
   const [isDeactivating, setIsDeactivating] = useState(false)
   const debouncedSearch = useDebounce(search, 300)
+  const searchTerm = debouncedSearch.trim()
 
   const fetchProducts = useCallback(
     (signal) =>
-      productService.getAll({ page, size, sort, soloActivos: !showInactive }, signal),
-    [page, size, sort, showInactive],
+      productService.getAll(
+        { page, size, sort, soloActivos: !showInactive, search: searchTerm },
+        signal,
+      ),
+    [page, size, sort, showInactive, searchTerm],
   )
   const { data, error, isLoading, refetch } = useFetch(fetchProducts)
 
@@ -120,17 +124,6 @@ export default function ProductsPage() {
       }),
     [isAdmin],
   )
-
-  const products = useMemo(() => {
-    const rows = data?.content ?? []
-    const term = debouncedSearch.trim().toLowerCase()
-    if (!term) return rows
-    return rows.filter(
-      (product) =>
-        product.nombre.toLowerCase().includes(term) ||
-        product.codigo.toLowerCase().includes(term),
-    )
-  }, [data, debouncedSearch])
 
   const handleSort = (field) => {
     const [currentField, currentDirection] = sort.split(',')
@@ -175,6 +168,14 @@ export default function ProductsPage() {
     if (!data) {
       return <Spinner />
     }
+    if (data.totalElements === 0 && searchTerm) {
+      return (
+        <EmptyState
+          title="Sin resultados"
+          description={`No encontramos productos que coincidan con "${searchTerm}".`}
+        />
+      )
+    }
     if (data.totalElements === 0) {
       return (
         <EmptyState
@@ -184,18 +185,10 @@ export default function ProductsPage() {
         />
       )
     }
-    if (products.length === 0 && debouncedSearch.trim()) {
-      return (
-        <EmptyState
-          title="Sin resultados"
-          description={`No encontramos productos que coincidan con "${debouncedSearch}" en esta página.`}
-        />
-      )
-    }
     return (
       <DataTable
         columns={columns}
-        rows={products}
+        rows={data.content}
         sort={sort}
         onSortChange={handleSort}
         isLoading={isLoading}

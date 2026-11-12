@@ -9,9 +9,9 @@ export const categoryService = {
     return data.content
   },
 
-  async getPage({ page = 1, size = 10, sort = 'nombre,asc' } = {}, signal) {
+  async getPage({ page = 1, size = 10, sort = 'nombre,asc', search = '' } = {}, signal) {
     const { data } = await api.get('/categories', {
-      params: { page: page - 1, size, sort },
+      params: { page: page - 1, size, sort, search: search || undefined },
       signal,
     })
     return data
