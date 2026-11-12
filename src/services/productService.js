@@ -1,9 +1,12 @@
 import api from './api'
 
 export const productService = {
-  async getAll({ page = 1, size = 10, sort = 'nombre,asc', soloActivos = true } = {}, signal) {
+  async getAll(
+    { page = 1, size = 10, sort = 'nombre,asc', soloActivos = true, search = '' } = {},
+    signal,
+  ) {
     const { data } = await api.get('/products', {
-      params: { page: page - 1, size, sort, soloActivos },
+      params: { page: page - 1, size, sort, soloActivos, search: search || undefined },
       signal,
     })
     return data
