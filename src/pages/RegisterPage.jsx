@@ -10,7 +10,7 @@ import Input from '../components/Input'
 
 export default function RegisterPage() {
   const { register: registerUser, isAuthenticated } = useAuth()
-    const [createdEnterpriseId, setCreatedEnterpriseId] = useState(null)
+  const [createdEnterpriseId, setCreatedEnterpriseId] = useState(null)
 
   const {
     register,

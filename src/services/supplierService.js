@@ -1,9 +1,9 @@
 import api from './api'
 
 export const supplierService = {
-  async getAll({ page = 1, size = 10, sort = 'razonSocial,asc' } = {}, signal) {
+  async getAll({ page = 1, size = 10, sort = 'razonSocial,asc', search = '' } = {}, signal) {
     const { data } = await api.get('/suppliers', {
-      params: { page: page - 1, size, sort },
+      params: { page: page - 1, size, sort, search: search || undefined },
       signal,
     })
     return data
