@@ -6,6 +6,7 @@ import Sidebar from './Sidebar'
 import { useAuth } from '../hooks/useAuth'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { NAV_ITEMS } from '../routes/navigation'
+import AssistantWidget from './AssistantWidget'
 
 export default function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -55,12 +56,14 @@ export default function MainLayout() {
           </div>
         </header>
 
-        <main id="main-content" tabIndex={-1} className="p-4 outline-none sm:p-6">
+        <main id="main-content" tabIndex={-1} className="p-4 pb-24 outline-none sm:p-6 sm:pb-24">
           <ErrorBoundary key={pathname}>
             <Outlet />
           </ErrorBoundary>
         </main>
       </div>
+
+      <AssistantWidget />
     </div>
   )
 }
