@@ -28,7 +28,7 @@ export default function SaleForm({ products, clients, onSubmit }) {
   } = useForm({ defaultValues: DEFAULT_VALUES, mode: 'onChange' })
   const { fields, append, remove } = useFieldArray({ control, name: 'detalles' })
 
-    const lines = useWatch({ control, name: 'detalles' })
+  const lines = useWatch({ control, name: 'detalles' })
   const total = lines.reduce(
     (sum, line) => sum + (Number(line.cantidad) || 0) * (Number(line.precioUnitario) || 0),
     0,
