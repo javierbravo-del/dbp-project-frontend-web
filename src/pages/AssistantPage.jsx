@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Send } from 'lucide-react'
+import { Check, Copy, History, Send } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useFetch } from '../hooks/useFetch'
 import { assistantService } from '../services/assistantService'
 import { getErrorMessage } from '../utils/errors'
+import { stripMarks } from '../utils/richText'
 import AssistantVisual from '../components/AssistantVisual'
+import FormattedText from '../components/FormattedText'
+import HeroIllustration from '../components/HeroIllustration'
+import RobotMark from '../components/RobotMark'
 import PageHeader from '../components/PageHeader'
 import Spinner from '../components/Spinner'
 
@@ -16,7 +20,51 @@ const SUGGESTIONS = [
   '¿Cuáles son mis productos más vendidos?',
   '¿Qué productos tienen stock bajo?',
   '¿Cuánto he vendido esta semana?',
+  '¿Qué medio de pago uso más?',
 ]
+
+function TypingDots() {
+  return (
+    <div className="flex items-center gap-2" role="status" aria-label="El asistente está escribiendo">
+      <RobotMark size={24} variant="head" className="text-brand-600" />
+      <div className="flex gap-1 rounded-2xl bg-gray-100 px-4 py-3">
+        {[0, 150, 300].map((delay) => (
+          <span
+            key={delay}
+            className="h-2 w-2 animate-bounce rounded-full bg-gray-400"
+            style={{ animationDelay: `${delay}ms` }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CopyButton({ text }) {
+  const [copied, setCopied] = useState(false)
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      toast.error('No se pudo copiar la respuesta')
+    }
+  }
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      aria-label="Copiar respuesta"
+      className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+    >
+      {copied ? <Check size={14} /> : <Copy size={14} />}
+      {copied ? 'Copiado' : 'Copiar'}
+    </button>
+  )
+}
+
+CopyButton.propTypes = { text: PropTypes.string.isRequired }
 
 function MessageBubble({ message }) {
   const isUser = message.role === 'user'
@@ -28,11 +76,24 @@ function MessageBubble({ message }) {
 
   return (
     <div className={`flex flex-col gap-2 ${isUser ? 'items-end' : 'items-start'}`}>
-      <p
-        className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm ${bubbleClasses}`}
-      >
-        {message.text}
-      </p>
+      <div className={`flex max-w-[90%] items-start gap-2 ${isUser ? '' : ''}`}>
+        {!isUser && <RobotMark size={24} variant="head" className="mt-1 shrink-0 text-brand-600" />}
+        {isUser ? (
+          <p className={`whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm ${bubbleClasses}`}>
+            {message.text}
+          </p>
+        ) : (
+          <FormattedText
+            text={message.text}
+            className={`rounded-2xl px-4 py-2 text-sm ${bubbleClasses}`}
+          />
+        )}
+      </div>
+      {!isUser && !message.failed && (
+        <div className="pl-9">
+          <CopyButton text={stripMarks(message.text)} />
+        </div>
+      )}
       {!isUser && message.visual && (
         <div className="w-full max-w-[95%]">
           <AssistantVisual visual={message.visual} />
@@ -78,6 +139,7 @@ export default function AssistantPage() {
   }, [history.data])
 
   const messages = [...historyMessages, ...sessionMessages]
+  const recentQuestions = messages.filter((message) => message.role === 'user').slice(-12).reverse()
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -126,10 +188,11 @@ export default function AssistantPage() {
   }
 
   return (
-    <section className="mx-auto max-w-3xl space-y-4">
+    <section className="mx-auto max-w-5xl space-y-4">
       <PageHeader title="Asistente" breadcrumbs={BREADCRUMBS} />
 
-      <div className="flex h-[70vh] flex-col rounded-2xl bg-white shadow-sm">
+      <div className="grid gap-4 lg:grid-cols-[1fr_16rem]">
+      <div className="flex h-[70vh] flex-col rounded-lg bg-white shadow-sm">
         <div className="flex-1 space-y-3 overflow-y-auto p-4" aria-live="polite">
           {history.isLoading && messages.length === 0 && <Spinner />}
 
@@ -141,21 +204,10 @@ export default function AssistantPage() {
 
           {!history.isLoading && messages.length === 0 && (
             <div className="space-y-3 py-8 text-center">
+              <HeroIllustration width={300} className="mx-auto max-w-full text-brand-600" />
               <p className="text-sm text-gray-600">
                 Pregúntame sobre tus ventas, tu inventario o tus clientes.
               </p>
-              <div className="flex flex-wrap justify-center gap-2">
-                {SUGGESTIONS.map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    type="button"
-                    onClick={() => setDraft(suggestion)}
-                    className="rounded-full border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
             </div>
           )}
 
@@ -163,18 +215,25 @@ export default function AssistantPage() {
             <MessageBubble key={message.id} message={message} />
           ))}
 
-          {isSending && (
-            <div className="flex justify-start">
-              <p className="rounded-2xl bg-gray-100 px-4 py-2 text-sm text-gray-500">
-                Pensando...
-              </p>
-            </div>
-          )}
+          {isSending && <TypingDots />}
 
           <div ref={bottomRef} />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-2 border-t border-gray-200 p-4">
+          <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Preguntas sugeridas">
+            {SUGGESTIONS.map((suggestion) => (
+              <button
+                key={suggestion}
+                type="button"
+                onClick={() => setDraft(suggestion)}
+                disabled={isSending}
+                className="shrink-0 rounded-full border border-gray-300 px-3 py-1 text-xs text-gray-700 transition-colors hover:border-brand-400 hover:text-brand-700 disabled:opacity-50"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
           <div className="flex items-end gap-3">
             <textarea
               value={draft}
@@ -207,6 +266,32 @@ export default function AssistantPage() {
             </span>
           </div>
         </form>
+      </div>
+
+      <aside className="hidden max-h-[70vh] overflow-y-auto rounded-lg bg-white p-4 shadow-sm lg:block">
+        <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
+          <History size={16} aria-hidden="true" />
+          Preguntas recientes
+        </h2>
+        {recentQuestions.length === 0 ? (
+          <p className="text-xs text-gray-500">Aquí verás las preguntas que hagas.</p>
+        ) : (
+          <ul className="space-y-1">
+            {recentQuestions.map((entry) => (
+              <li key={entry.id}>
+                <button
+                  type="button"
+                  onClick={() => setDraft(entry.text)}
+                  title="Usar esta pregunta de nuevo"
+                  className="w-full rounded-md px-2 py-1.5 text-left text-xs text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                >
+                  {entry.text}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </aside>
       </div>
     </section>
   )

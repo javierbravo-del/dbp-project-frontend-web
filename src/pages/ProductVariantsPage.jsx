@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { PackagePlus } from 'lucide-react'
+import { PackagePlus, Pencil, SlidersHorizontal } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useFetch } from '../hooks/useFetch'
 import { usePageParams } from '../hooks/usePageParams'
@@ -15,7 +15,9 @@ import ErrorState from '../components/ErrorState'
 import PageHeader from '../components/PageHeader'
 import Pagination from '../components/Pagination'
 import Spinner from '../components/Spinner'
+import StockAdjustDialog from '../components/StockAdjustDialog'
 import StockEntryDialog from '../components/StockEntryDialog'
+import VariantEditDialog from '../components/VariantEditDialog'
 import VariantForm from '../components/VariantForm'
 
 const toVariantPayload = (values) => ({
@@ -25,7 +27,7 @@ const toVariantPayload = (values) => ({
   stockMinimo: values.stockMinimo,
 })
 
-const buildColumns = ({ onAddStock }) => [
+const buildColumns = ({ onAddStock, onAdjustStock, onEdit }) => [
   { key: 'talla', header: 'Talla', sortKey: 'talla' },
   { key: 'color', header: 'Color', sortKey: 'color' },
   { key: 'sku', header: 'SKU', render: (variant) => variant.sku ?? '—' },
@@ -45,15 +47,35 @@ const buildColumns = ({ onAddStock }) => [
     key: 'actions',
     header: 'Acciones',
     render: (variant) => (
-      <button
-        type="button"
-        title="Registrar entrada de stock"
-        aria-label={`Registrar entrada de stock para talla ${variant.talla} ${variant.color}`}
-        onClick={() => onAddStock(variant)}
-        className="rounded-lg p-2 text-brand-600 hover:bg-brand-50"
-      >
-        <PackagePlus size={16} />
-      </button>
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          title="Registrar entrada de stock"
+          aria-label={`Registrar entrada de stock para talla ${variant.talla} ${variant.color}`}
+          onClick={() => onAddStock(variant)}
+          className="rounded-lg p-2 text-brand-600 hover:bg-brand-50"
+        >
+          <PackagePlus size={16} />
+        </button>
+        <button
+          type="button"
+          title="Corregir stock"
+          aria-label={`Corregir stock de talla ${variant.talla} ${variant.color}`}
+          onClick={() => onAdjustStock(variant)}
+          className="rounded-lg p-2 text-brand-600 hover:bg-brand-50"
+        >
+          <SlidersHorizontal size={16} />
+        </button>
+        <button
+          type="button"
+          title="Editar variante"
+          aria-label={`Editar variante talla ${variant.talla} ${variant.color}`}
+          onClick={() => onEdit(variant)}
+          className="rounded-lg p-2 text-brand-600 hover:bg-brand-50"
+        >
+          <Pencil size={16} />
+        </button>
+      </div>
     ),
   },
 ]
@@ -62,6 +84,8 @@ export default function ProductVariantsPage() {
   const { id } = useParams()
   const { page, size, sort, setPage, setSize, setSort } = usePageParams({ defaultSort: 'id,asc' })
   const [variantForStock, setVariantForStock] = useState(null)
+  const [variantForAdjust, setVariantForAdjust] = useState(null)
+  const [variantForEdit, setVariantForEdit] = useState(null)
 
   const fetchProduct = useCallback((signal) => productService.getById(id, signal), [id])
   const fetchVariants = useCallback(
@@ -71,7 +95,15 @@ export default function ProductVariantsPage() {
   const product = useFetch(fetchProduct)
   const variants = useFetch(fetchVariants)
 
-  const columns = useMemo(() => buildColumns({ onAddStock: setVariantForStock }), [])
+  const columns = useMemo(
+    () =>
+      buildColumns({
+        onAddStock: setVariantForStock,
+        onAdjustStock: setVariantForAdjust,
+        onEdit: setVariantForEdit,
+      }),
+    [],
+  )
 
   const productName = product.data?.nombre ?? 'Producto'
   const breadcrumbs = [
@@ -132,6 +164,32 @@ export default function ProductVariantsPage() {
     }
   }
 
+  const handleStockAdjust = async ({ nuevoStock, motivo }) => {
+    try {
+      const movement = await stockService.registerAdjustment({
+        varianteId: variantForAdjust.id,
+        nuevoStock,
+        motivo,
+      })
+      toast.success(`Stock corregido. Nuevo stock: ${movement.stockResultante ?? nuevoStock}`)
+      setVariantForAdjust(null)
+      variants.refetch()
+    } catch (error) {
+      toast.error(getErrorMessage(error))
+    }
+  }
+
+  const handleVariantEdit = async (payload) => {
+    try {
+      await variantService.update(variantForEdit.id, payload)
+      toast.success('Variante actualizada correctamente')
+      setVariantForEdit(null)
+      variants.refetch()
+    } catch (error) {
+      toast.error(getErrorMessage(error))
+    }
+  }
+
   const renderVariants = () => {
     if (variants.error) {
       return <ErrorState message={getErrorMessage(variants.error)} onRetry={variants.refetch} />
@@ -185,6 +243,16 @@ export default function ProductVariantsPage() {
         variant={variantForStock}
         onSubmit={handleStockEntry}
         onCancel={() => setVariantForStock(null)}
+      />
+      <StockAdjustDialog
+        variant={variantForAdjust}
+        onSubmit={handleStockAdjust}
+        onCancel={() => setVariantForAdjust(null)}
+      />
+      <VariantEditDialog
+        variant={variantForEdit}
+        onSubmit={handleVariantEdit}
+        onCancel={() => setVariantForEdit(null)}
       />
     </section>
   )

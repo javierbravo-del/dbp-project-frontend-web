@@ -25,6 +25,7 @@ const SaleDetailPage = lazy(() => import('../pages/SaleDetailPage'))
 const PurchasesPage = lazy(() => import('../pages/PurchasesPage'))
 const PurchaseFormPage = lazy(() => import('../pages/PurchaseFormPage'))
 const PurchaseDetailPage = lazy(() => import('../pages/PurchaseDetailPage'))
+const TeamPage = lazy(() => import('../pages/TeamPage'))
 const AssistantPage = lazy(() => import('../pages/AssistantPage'))
 
 export default function AppRoutes() {
@@ -67,6 +68,12 @@ export default function AppRoutes() {
             <Route path="/suppliers/new" element={<SupplierFormPage />} />
 
             <Route path="/assistant" element={<AssistantPage />} />
+          </Route>
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+          <Route element={<MainLayout />}>
+            <Route path="/team" element={<TeamPage />} />
           </Route>
         </Route>
 

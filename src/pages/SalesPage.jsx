@@ -10,6 +10,8 @@ import { formatCurrency, formatDateTime } from '../utils/format'
 import { PAYMENT_METHODS, SALES_CHANNELS, labelOf } from '../utils/sales'
 import Badge from '../components/Badge'
 import ButtonLink from '../components/ButtonLink'
+import CsvExportButton from '../components/CsvExportButton'
+import FilterChips from '../components/FilterChips'
 import DataTable from '../components/DataTable'
 import DateRangeFilter from '../components/DateRangeFilter'
 import EmptyState from '../components/EmptyState'
@@ -30,33 +32,39 @@ const COLUMNS = [
   {
     key: 'fechaEmision',
     header: 'Fecha',
+    csv: (sale) => sale.fechaEmision,
     sortKey: 'fechaEmision',
     render: (sale) => formatDateTime(sale.fechaEmision),
   },
   {
     key: 'clienteNombre',
     header: 'Cliente',
+    csv: (sale) => sale.clienteNombre ?? 'Cliente general',
     render: (sale) => sale.clienteNombre ?? 'Cliente general',
   },
   {
     key: 'medioPago',
     header: 'Pago',
+    csv: (sale) => labelOf(PAYMENT_METHODS, sale.medioPago),
     render: (sale) => labelOf(PAYMENT_METHODS, sale.medioPago),
   },
   {
     key: 'canal',
     header: 'Canal',
+    csv: (sale) => labelOf(SALES_CHANNELS, sale.canal),
     render: (sale) => labelOf(SALES_CHANNELS, sale.canal),
   },
   {
     key: 'total',
     header: 'Total',
+    csv: (sale) => sale.total,
     sortKey: 'total',
     render: (sale) => formatCurrency(sale.total),
   },
   {
     key: 'estado',
     header: 'Estado',
+    csv: (sale) => STATUS_BADGES[sale.estado]?.label ?? sale.estado,
     render: (sale) => {
       const badge = STATUS_BADGES[sale.estado] ?? { variant: 'neutral', label: sale.estado }
       return <Badge variant={badge.variant}>{badge.label}</Badge>
@@ -91,7 +99,11 @@ export default function SalesPage() {
   )
   const { data, error, isLoading, refetch } = useFetch(fetchSales)
 
-  const rows = useMemo(() => data?.content ?? [], [data])
+  const [statusFilter, setStatusFilter] = useState('TODAS')
+  const rows = useMemo(() => {
+    const all = data?.content ?? []
+    return statusFilter === 'TODAS' ? all : all.filter((sale) => sale.estado === statusFilter)
+  }, [data, statusFilter])
 
   const handleSort = (field) => {
     const [currentField, currentDirection] = sort.split(',')
@@ -134,6 +146,7 @@ export default function SalesPage() {
   return (
     <section className="space-y-4">
       <PageHeader title="Ventas" breadcrumbs={BREADCRUMBS}>
+        <CsvExportButton filename="ventas.csv" columns={COLUMNS} rows={rows} />
         <ButtonLink to="/sales/new">
           <Plus size={16} className="mr-1" />
           Nueva venta
@@ -141,6 +154,17 @@ export default function SalesPage() {
       </PageHeader>
 
       <DateRangeFilter desde={desde} hasta={hasta} onChange={handleRangeChange} />
+      <FilterChips
+        label="Filtrar por estado"
+        value={statusFilter}
+        onChange={setStatusFilter}
+        options={[
+          { value: 'TODAS', label: 'Todas' },
+          { value: 'COMPLETADA', label: 'Completadas' },
+          { value: 'PENDIENTE', label: 'Pendientes' },
+          { value: 'ANULADA', label: 'Anuladas' },
+        ]}
+      />
 
       {renderContent()}
 

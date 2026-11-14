@@ -5,6 +5,8 @@ import toast from 'react-hot-toast'
 import { useAuth } from '../hooks/useAuth'
 import { enterpriseService } from '../services/enterpriseService'
 import { getErrorMessage } from '../utils/errors'
+import AuthPanel from '../components/AuthPanel'
+import Logo from '../components/Logo'
 import Button from '../components/Button'
 import Input from '../components/Input'
 
@@ -47,16 +49,24 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4 py-10">
+    <main className="grid min-h-screen bg-gray-50 lg:grid-cols-2">
+      <AuthPanel
+        title="Ordena tu negocio de Gamarra desde el primer día."
+        description="Crea tu cuenta, registra tus productos y empieza a preguntarle a Gamarrito cómo van tus ventas."
+      />
+      <section className="flex items-center justify-center p-4 py-10 sm:p-8">
       <form
         onSubmit={handleSubmit(onSubmit)}
         noValidate
-        className="w-full max-w-lg space-y-6 rounded-2xl bg-white p-8 shadow"
+        className="w-full max-w-lg space-y-6 rounded-xl border border-gray-200 bg-white p-8"
       >
         <header>
+          <Link to="/" aria-label="Volver a la portada" className="mb-4 inline-block text-brand-700 lg:hidden">
+            <Logo size={30} textClassName="text-gray-900" />
+          </Link>
           <h1 className="text-2xl font-bold text-gray-900">Crea tu cuenta</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Registra tu negocio y tu usuario administrador.
+            Registra tu negocio y tu usuario administrador. Después podrás agregar a tus empleados desde la sección Equipo.
           </p>
         </header>
 
@@ -137,6 +147,7 @@ export default function RegisterPage() {
           </Link>
         </p>
       </form>
+      </section>
     </main>
   )
 }

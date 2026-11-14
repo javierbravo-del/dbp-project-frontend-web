@@ -7,7 +7,18 @@ import reportService from '../services/reportService';
 import stockService from '../services/stockService';
 import { getErrorMessage } from '../utils/errors';
 import { formatCurrency } from '../utils/format';
-import { getLastDaysRange } from '../utils/dates';
+import {
+  formatShortDay,
+  getDaysList,
+  getLastDaysRange,
+  getPreviousRange,
+  percentChange,
+} from '../utils/dates';
+import { clientService } from '../services/clientService';
+import { productService } from '../services/productService';
+import { salesService } from '../services/salesService';
+import DailySalesChart from '../components/DailySalesChart';
+import OnboardingChecklist from '../components/OnboardingChecklist';
 import StatCard from '../components/StatCard';
 import DashboardCard from '../components/DashboardCard';
 import DateRangeFilter from '../components/DateRangeFilter';
@@ -41,6 +52,26 @@ function DashboardPage() {
     (signal) => reportService.getSummary({ desde, hasta }, signal),
     [desde, hasta],
   );
+  const previousRange = getPreviousRange(range);
+  const prevDesde = previousRange.desde;
+  const prevHasta = previousRange.hasta;
+  const fetchPrevious = useCallback(
+    (signal) => reportService.getSummary({ desde: prevDesde, hasta: prevHasta }, signal),
+    [prevDesde, prevHasta],
+  );
+  const fetchDaily = useCallback(
+    (signal) =>
+      Promise.all(
+        getDaysList(hasta, 7).map(async (day) => {
+          const result = await reportService.getSummary({ desde: day, hasta: day }, signal);
+          return { label: formatShortDay(day), total: Number(result.totalVendido ?? 0) };
+        }),
+      ),
+    [hasta],
+  );
+  const fetchProductCount = useCallback((s) => productService.getAll({ size: 1 }, s), []);
+  const fetchClientCount = useCallback((s) => clientService.getAll({ size: 1 }, s), []);
+  const fetchSalesCount = useCallback((s) => salesService.getAll({ size: 1 }, s), []);
   const fetchGrouped = useCallback(
     (signal) => reportService.getGroupedSales({ desde, hasta, por: grouping }, signal),
     [desde, hasta, grouping],
@@ -54,6 +85,15 @@ function DashboardPage() {
   const summary = useFetch(
     useCallback((s) => (isAdmin ? fetchSummary(s) : Promise.resolve(null)), [isAdmin, fetchSummary]),
   );
+  const previous = useFetch(
+    useCallback((s) => (isAdmin ? fetchPrevious(s) : Promise.resolve(null)), [isAdmin, fetchPrevious]),
+  );
+  const daily = useFetch(
+    useCallback((s) => (isAdmin ? fetchDaily(s) : Promise.resolve(null)), [isAdmin, fetchDaily]),
+  );
+  const productCount = useFetch(fetchProductCount);
+  const clientCount = useFetch(fetchClientCount);
+  const salesCount = useFetch(fetchSalesCount);
   const grouped = useFetch(
     useCallback((s) => (isAdmin ? fetchGrouped(s) : Promise.resolve(null)), [isAdmin, fetchGrouped]),
   );
@@ -64,14 +104,40 @@ function DashboardPage() {
 
   const lowStockItems = lowStock.data?.content ?? [];
 
+  const checklistReady = productCount.data && clientCount.data && salesCount.data;
+  const checklistSteps = checklistReady
+    ? [
+        { label: 'Registra tu primer producto', to: '/products/new', done: productCount.data.totalElements > 0 },
+        { label: 'Agrega a tu primer cliente', to: '/clients/new', done: clientCount.data.totalElements > 0 },
+        { label: 'Registra tu primera venta', to: '/sales/new', done: salesCount.data.totalElements > 0 },
+      ]
+    : null;
+
+  const cur = summary.data;
+  const prev = previous.data;
+  const deltaOf = (key) => (cur && prev ? percentChange(cur[key], prev[key]) : null);
+  const salesDelta = deltaOf('totalVendido');
+  let summaryPhrase = null;
+  if (cur) {
+    summaryPhrase =
+      cur.numeroVentas === 0
+        ? 'Aún no registraste ventas en este periodo.'
+        : `En este periodo vendiste ${formatCurrency(cur.totalVendido)} en ${cur.numeroVentas} ventas` +
+          (salesDelta === null
+            ? '.'
+            : `, un ${Math.abs(salesDelta).toFixed(1)}% ${salesDelta >= 0 ? 'más' : 'menos'} que el periodo anterior.`);
+  }
+
   return (
     <main className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold text-gray-900">Hola, {user?.nombre ?? 'bienvenido'}</h1>
         <p className="text-sm text-gray-500">
-          {isAdmin ? 'Resumen de tu negocio' : 'Alertas de inventario'}
+          {isAdmin ? (summaryPhrase ?? 'Resumen de tu negocio') : 'Alertas de inventario'}
         </p>
       </header>
+
+      {checklistSteps && <OnboardingChecklist steps={checklistSteps} />}
 
       {isAdmin && (
         <>
@@ -83,28 +149,47 @@ function DashboardPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <StatCard
                 title="Total vendido"
-                value={summary.data ? formatCurrency(summary.data.totalVendido) : '…'}
+                value={summary.data ? formatCurrency(summary.data.totalVendido) : ''}
+                isLoading={!summary.data}
+                delta={deltaOf('totalVendido')}
                 hint={summary.data ? `${summary.data.numeroVentas} ventas` : undefined}
                 icon={Banknote}
               />
               <StatCard
                 title="Ganancia"
-                value={summary.data ? formatCurrency(summary.data.ganancia) : '…'}
+                value={summary.data ? formatCurrency(summary.data.ganancia) : ''}
+                isLoading={!summary.data}
+                delta={deltaOf('ganancia')}
                 hint={summary.data ? `Margen ${summary.data.margenPorcentaje}%` : undefined}
                 icon={Percent}
               />
               <StatCard
                 title="Ticket promedio"
-                value={summary.data ? formatCurrency(summary.data.ticketPromedio) : '…'}
+                value={summary.data ? formatCurrency(summary.data.ticketPromedio) : ''}
+                isLoading={!summary.data}
+                delta={deltaOf('ticketPromedio')}
                 icon={Receipt}
               />
               <StatCard
                 title="Unidades vendidas"
-                value={summary.data ? summary.data.unidadesVendidas : '…'}
+                value={summary.data ? summary.data.unidadesVendidas : ''}
+                isLoading={!summary.data}
+                delta={deltaOf('unidadesVendidas')}
                 icon={ShoppingBag}
               />
             </div>
           )}
+
+          <DashboardCard
+            title="Ventas de los últimos 7 días"
+            isLoading={daily.isLoading}
+            error={daily.error ? getErrorMessage(daily.error) : undefined}
+            onRetry={daily.refetch}
+            isEmpty={!daily.data}
+            emptyText=""
+          >
+            {daily.data && <DailySalesChart data={daily.data} />}
+          </DashboardCard>
 
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
             <DashboardCard
@@ -192,7 +277,7 @@ function DashboardPage() {
         error={lowStock.error ? getErrorMessage(lowStock.error) : undefined}
         onRetry={lowStock.refetch}
         isEmpty={lowStockItems.length === 0}
-        emptyText="Todo el inventario está por encima del mínimo 🎉"
+        emptyText="Todo el inventario está por encima del mínimo"
         action={
           <Link to="/products" className="text-sm font-medium text-brand-600 hover:underline">
             Ver productos

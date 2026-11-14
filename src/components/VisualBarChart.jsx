@@ -12,7 +12,7 @@ import { AXIS_TICK, GRID_STROKE, TOOLTIP_STYLE } from '../utils/chartTheme'
 import { formatAxisValue, formatVisualValue } from '../utils/visuals'
 import VisualCard from './VisualCard'
 
-const BAR_COLOR = '#1f5ae0'
+const BAR_COLOR = '#3d5e99'
 
 export default function VisualBarChart({ title, points, format }) {
   return (
