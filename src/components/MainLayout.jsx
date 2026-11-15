@@ -7,6 +7,7 @@ import Sidebar from './Sidebar'
 import UserMenu from './UserMenu'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { NAV_ITEMS } from '../routes/navigation'
+import AssistantWidget from './AssistantWidget'
 
 const readCollapsed = () => {
   try {
@@ -56,7 +57,7 @@ export default function MainLayout() {
           </div>
         </header>
 
-        <main id="main-content" tabIndex={-1} className="p-4 pb-24 outline-none sm:p-6 lg:pb-6">
+        <main id="main-content" tabIndex={-1} className="p-4 pb-24 outline-none sm:p-6 lg:pb-24">
           <ErrorBoundary key={pathname}>
             <div key={pathname} className="page-enter">
               <Outlet />
@@ -66,6 +67,7 @@ export default function MainLayout() {
       </div>
 
       <MobileBottomNav onOpenMenu={() => setIsSidebarOpen(true)} />
+      <AssistantWidget />
     </div>
   )
 }

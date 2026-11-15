@@ -1,4 +1,4 @@
-import { Bot, ClipboardList, UserCog, LayoutDashboard, Package, ShoppingCart, Tags, Truck, Users } from 'lucide-react'
+import { ClipboardList, UserCog, LayoutDashboard, Package, ShoppingCart, Tags, Truck, Users } from 'lucide-react'
 
 export const NAV_GROUPS = [
   {
@@ -24,13 +24,9 @@ export const NAV_GROUPS = [
       { to: '/team', label: 'Equipo', icon: UserCog, roles: ['ADMIN'] },
     ],
   },
-  {
-    label: 'Asistente',
-    items: [{ to: '/assistant', label: 'Asistente', icon: Bot }],
-  },
 ]
 
 export const NAV_ITEMS = NAV_GROUPS.flatMap((group) => group.items)
 
 // Secciones principales que van en la barra inferior del móvil
-export const BOTTOM_NAV_PATHS = ['/dashboard', '/sales', '/products', '/assistant']
+export const BOTTOM_NAV_PATHS = ['/dashboard', '/sales', '/products', '/clients']

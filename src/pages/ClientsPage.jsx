@@ -68,10 +68,11 @@ export default function ClientsPage() {
   const [clientToDelete, setClientToDelete] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const debouncedSearch = useDebounce(search, 300)
+  const searchTerm = debouncedSearch.trim()
 
   const fetchClients = useCallback(
-    (signal) => clientService.getAll({ page, size, sort }, signal),
-    [page, size, sort],
+    (signal) => clientService.getAll({ page, size, sort, search: searchTerm }, signal),
+    [page, size, sort, searchTerm],
   )
   const { data, error, isLoading, refetch } = useFetch(fetchClients)
 
@@ -79,16 +80,6 @@ export default function ClientsPage() {
     () => buildColumns({ isAdmin, onDelete: setClientToDelete }),
     [isAdmin],
   )
-
-  const clients = useMemo(() => {
-    const rows = data?.content ?? []
-    const term = debouncedSearch.trim().toLowerCase()
-    if (!term) return rows
-    return rows.filter(
-      (client) =>
-        client.nombre.toLowerCase().includes(term) || client.documento.includes(term),
-    )
-  }, [data, debouncedSearch])
 
   const handleSort = (field) => {
     const [currentField, currentDirection] = sort.split(',')
@@ -121,6 +112,14 @@ export default function ClientsPage() {
     if (!data) {
       return <Spinner />
     }
+    if (data.totalElements === 0 && searchTerm) {
+      return (
+        <EmptyState
+          title="Sin resultados"
+          description={`No encontramos clientes que coincidan con "${searchTerm}".`}
+        />
+      )
+    }
     if (data.totalElements === 0) {
       return (
         <EmptyState
@@ -130,18 +129,10 @@ export default function ClientsPage() {
         />
       )
     }
-    if (clients.length === 0 && debouncedSearch.trim()) {
-      return (
-        <EmptyState
-          title="Sin resultados"
-          description={`No encontramos clientes que coincidan con "${debouncedSearch}" en esta página.`}
-        />
-      )
-    }
     return (
       <DataTable
         columns={columns}
-        rows={clients}
+        rows={data.content}
         sort={sort}
         onSortChange={handleSort}
         isLoading={isLoading}
