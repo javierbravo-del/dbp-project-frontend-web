@@ -34,7 +34,7 @@ export default function CategoryFormPage() {
 
   const title = isEditing ? 'Editar categoría' : 'Nueva categoría'
   const breadcrumbs = [
-    { label: 'Dashboard', to: '/' },
+    { label: 'Dashboard', to: '/dashboard' },
     { label: 'Categorías', to: '/categories' },
     { label: title },
   ]

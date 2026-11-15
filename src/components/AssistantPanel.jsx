@@ -5,6 +5,8 @@ import toast from 'react-hot-toast'
 import { useFetch } from '../hooks/useFetch'
 import { assistantService } from '../services/assistantService'
 import { getErrorMessage } from '../utils/errors'
+import AssistantVisual from './AssistantVisual'
+import FormattedText from './FormattedText'
 import Spinner from './Spinner'
 
 const MAX_LENGTH = 500
@@ -18,18 +20,28 @@ const SUGGESTIONS = [
 function MessageBubble({ message }) {
   const isUser = message.role === 'user'
   const bubbleClasses = isUser
-    ? 'bg-blue-600 text-white'
+    ? 'bg-brand-600 text-white'
     : message.failed
       ? 'bg-red-50 text-red-700'
       : 'bg-gray-100 text-gray-900'
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <p
-        className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm ${bubbleClasses}`}
-      >
-        {message.text}
-      </p>
+    <div className={`flex flex-col gap-2 ${isUser ? 'items-end' : 'items-start'}`}>
+      {isUser ? (
+        <p className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm ${bubbleClasses}`}>
+          {message.text}
+        </p>
+      ) : (
+        <FormattedText
+          text={message.text}
+          className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${bubbleClasses}`}
+        />
+      )}
+      {!isUser && message.visual && (
+        <div className="w-full">
+          <AssistantVisual visual={message.visual} />
+        </div>
+      )}
     </div>
   )
 }
@@ -39,6 +51,7 @@ MessageBubble.propTypes = {
     role: PropTypes.oneOf(['user', 'assistant']).isRequired,
     text: PropTypes.string.isRequired,
     failed: PropTypes.bool,
+    visual: PropTypes.object,
   }).isRequired,
 }
 
@@ -96,7 +109,12 @@ export default function AssistantPanel({ isOpen, onClose }) {
       const answer = await assistantService.ask(question)
       setSessionMessages((current) => [
         ...current,
-        { id: `${messageId}-a`, role: 'assistant', text: answer.respuesta },
+        {
+          id: `${messageId}-a`,
+          role: 'assistant',
+          text: answer.respuesta,
+          visual: answer.visual,
+        },
       ])
       setRemaining(answer.consultasRestantesHoy)
     } catch (error) {
@@ -131,11 +149,11 @@ export default function AssistantPanel({ isOpen, onClose }) {
       role="dialog"
       aria-label="Gamarrito IA"
       onKeyDown={handlePanelKeyDown}
-      className={`fixed bottom-20 right-4 z-20 flex h-[32rem] max-h-[calc(100vh-6rem)] w-[calc(100vw-2rem)] max-w-sm flex-col rounded-2xl border border-gray-200 bg-white shadow-xl ${
+      className={`fixed bottom-36 right-4 z-40 flex h-[32rem] max-h-[calc(100vh-10rem)] w-[calc(100vw-2rem)] max-w-md lg:bottom-20 lg:max-h-[calc(100vh-6rem)] flex-col rounded-2xl border border-gray-200 bg-white shadow-xl ${
         isOpen ? '' : 'hidden'
       }`}
     >
-      <header className="flex items-center justify-between rounded-t-2xl bg-blue-600 px-4 py-3 text-white">
+      <header className="flex items-center justify-between rounded-t-2xl bg-brand-600 px-4 py-3 text-white">
         <div className="flex items-center gap-2">
           <Bot size={18} />
           <h2 className="text-sm font-semibold">Gamarrito IA</h2>
@@ -144,7 +162,7 @@ export default function AssistantPanel({ isOpen, onClose }) {
           type="button"
           onClick={onClose}
           aria-label="Cerrar Gamarrito IA"
-          className="rounded-lg p-1 hover:bg-blue-700"
+          className="rounded-lg p-1 hover:bg-brand-700"
         >
           <X size={18} />
         </button>
@@ -206,13 +224,13 @@ export default function AssistantPanel({ isOpen, onClose }) {
             placeholder="Pregúntale a Gamarrito IA..."
             aria-label="Tu pregunta"
             disabled={isSending}
-            className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-gray-50"
+            className="flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200 disabled:bg-gray-50"
           />
           <button
             type="submit"
             disabled={isSending || !draft.trim()}
             aria-label="Enviar pregunta"
-            className="rounded-lg bg-blue-600 p-2.5 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-brand-600 p-2.5 text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Send size={16} />
           </button>

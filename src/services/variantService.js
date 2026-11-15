@@ -13,4 +13,9 @@ export const variantService = {
     const { data } = await api.post(`/products/${productId}/variants`, payload)
     return data
   },
+
+  async update(variantId, payload) {
+    const { data } = await api.put(`/variants/${variantId}`, payload)
+    return data
+  },
 }

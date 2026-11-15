@@ -1,1 +1,133 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Paleta "azul pizarra": un solo acento, fondos planos. */
+  --color-brand-50: #e8edf5;
+  --color-brand-100: #d5deec;
+  --color-brand-200: #b3c3dc;
+  --color-brand-500: #3d5e99;
+  --color-brand-600: #2f4b7c;
+  --color-brand-700: #263d66;
+  --color-brand-800: #1e3052;
+  --color-brand-900: #16233c;
+
+  /* Detalle cálido de la mascota (no cambia con la paleta) */
+  --color-spark-400: #e9a95c;
+
+  --color-accent-100: #e8edf5;
+  --color-accent-500: #5b7db1;
+  --color-accent-700: #3d5e99;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.7s ease-out both;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+}
+
+/* Aparición suave al hacer scroll (hook useInView). */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Modo oscuro: se redefinen las variables de color del tema cuando <html> tiene la clase "dark". */
+.dark {
+  color-scheme: dark;
+
+  --color-gray-50: #10151e;
+  --color-gray-100: #161d29;
+  --color-gray-200: #222b3a;
+  --color-gray-300: #334054;
+  --color-gray-400: #6e7c92;
+  --color-gray-500: #94a1b5;
+  --color-gray-600: #aab5c7;
+  --color-gray-700: #c5cedd;
+  --color-gray-800: #dde3ed;
+  --color-gray-900: #f1f4f9;
+
+  --color-brand-50: #1a2740;
+  --color-brand-100: #203051;
+  --color-brand-200: #2d4471;
+  --color-brand-500: #8fa9d1;
+  --color-brand-600: #5b7db1;
+  --color-brand-700: #7d9cc9;
+
+  --color-red-50: #3b1219;
+  --color-red-100: #4a1820;
+  --color-red-200: #7f1d1d;
+  --color-red-600: #ef4444;
+  --color-red-700: #f87171;
+  --color-red-800: #fca5a5;
+
+  --color-green-50: #052e16;
+  --color-green-100: #14532d;
+  --color-green-700: #86efac;
+  --color-green-800: #bbf7d0;
+
+  --color-yellow-100: #422006;
+  --color-yellow-700: #fde68a;
+  --color-yellow-800: #fef3c7;
+}
+
+.dark .bg-white {
+  background-color: var(--color-gray-100);
+}
+
+/* Transición suave entre páginas (respeta prefers-reduced-motion) */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.page-enter { animation: page-enter 0.25s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .page-enter { animation: none; }
+}

@@ -14,7 +14,7 @@ import Pagination from '../components/Pagination'
 import SearchInput from '../components/SearchInput'
 import Spinner from '../components/Spinner'
 
-const BREADCRUMBS = [{ label: 'Dashboard', to: '/' }, { label: 'Proveedores' }]
+const BREADCRUMBS = [{ label: 'Dashboard', to: '/dashboard' }, { label: 'Proveedores' }]
 
 const COLUMNS = [
   { key: 'ruc', header: 'RUC', sortKey: 'ruc' },

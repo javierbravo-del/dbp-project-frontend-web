@@ -7,7 +7,7 @@ export default function Spinner({ fullScreen = false, label = 'Cargando...' }) {
 
   return (
     <div className={wrapperClass} role="status" aria-live="polite">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-200 border-t-brand-600" />
       <span className="sr-only">{label}</span>
     </div>
   )

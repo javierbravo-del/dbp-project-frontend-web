@@ -6,7 +6,9 @@ import Spinner from '../components/Spinner'
 
 const LoginPage = lazy(() => import('../pages/LoginPage'))
 const RegisterPage = lazy(() => import('../pages/RegisterPage'))
+const LandingPage = lazy(() => import('../pages/LandingPage'))
 const DashboardPage = lazy(() => import('../pages/DashboardPage'))
+const AssistantVisualsDemoPage = lazy(() => import('../pages/AssistantVisualsDemoPage'))
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'))
 const ProductsPage = lazy(() => import('../pages/ProductsPage'))
 const ProductFormPage = lazy(() => import('../pages/ProductFormPage'))
@@ -23,17 +25,22 @@ const SaleDetailPage = lazy(() => import('../pages/SaleDetailPage'))
 const PurchasesPage = lazy(() => import('../pages/PurchasesPage'))
 const PurchaseFormPage = lazy(() => import('../pages/PurchaseFormPage'))
 const PurchaseDetailPage = lazy(() => import('../pages/PurchaseDetailPage'))
+const TeamPage = lazy(() => import('../pages/TeamPage'))
 
 export default function AppRoutes() {
   return (
     <Suspense fallback={<Spinner fullScreen />}>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        {import.meta.env.DEV && (
+          <Route path="/demo-visuales" element={<AssistantVisualsDemoPage />} />
+        )}
 
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
 
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/products/new" element={<ProductFormPage />} />
@@ -59,6 +66,12 @@ export default function AppRoutes() {
             <Route path="/suppliers" element={<SuppliersPage />} />
             <Route path="/suppliers/new" element={<SupplierFormPage />} />
 
+          </Route>
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+          <Route element={<MainLayout />}>
+            <Route path="/team" element={<TeamPage />} />
           </Route>
         </Route>
 

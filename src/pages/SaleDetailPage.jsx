@@ -30,7 +30,7 @@ export default function SaleDetailPage() {
   const { data: sale, error, refetch } = useFetch(fetchSale)
 
   const breadcrumbs = [
-    { label: 'Dashboard', to: '/' },
+    { label: 'Dashboard', to: '/dashboard' },
     { label: 'Ventas', to: '/sales' },
     { label: `Venta #${id}` },
   ]

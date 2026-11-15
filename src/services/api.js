@@ -70,9 +70,16 @@ api.interceptors.response.use(
       const newToken = await refreshPromise
       originalRequest.headers.Authorization = `Bearer ${newToken}`
       return api(originalRequest)
-    } catch {
-      tokenStorage.clear()
-      window.dispatchEvent(new Event('auth:logout'))
+    } catch (refreshError) {
+      // Solo se cierra la sesión si el servidor rechazó el refresh (401/403) o no hay token;
+      // un fallo de red no debería sacar al usuario.
+      const status = refreshError.response?.status
+      if (!refreshError.response || status === 401 || status === 403) {
+        if (refreshError.response || refreshError.message === 'Missing refresh token') {
+          tokenStorage.clear()
+          window.dispatchEvent(new Event('auth:logout'))
+        }
+      }
       return Promise.reject(error)
     }
   },

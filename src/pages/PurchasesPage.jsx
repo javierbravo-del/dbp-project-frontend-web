@@ -18,7 +18,7 @@ import PageHeader from '../components/PageHeader'
 import Pagination from '../components/Pagination'
 import Spinner from '../components/Spinner'
 
-const BREADCRUMBS = [{ label: 'Dashboard', to: '/' }, { label: 'Compras' }]
+const BREADCRUMBS = [{ label: 'Dashboard', to: '/dashboard' }, { label: 'Compras' }]
 
 const COLUMNS = [
   {
@@ -53,7 +53,7 @@ const COLUMNS = [
         to={`/purchases/${purchase.id}`}
         title="Ver detalle"
         aria-label={`Ver detalle de la compra ${purchase.id}`}
-        className="inline-flex rounded-lg p-2 text-blue-600 hover:bg-blue-50"
+        className="inline-flex rounded-lg p-2 text-brand-600 hover:bg-brand-50"
       >
         <Eye size={16} />
       </Link>

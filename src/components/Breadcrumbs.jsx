@@ -12,7 +12,7 @@ export default function Breadcrumbs({ items }) {
           return (
             <li key={item.label} className="flex items-center gap-1">
               {item.to && !isLast ? (
-                <Link to={item.to} className="hover:text-blue-600 hover:underline">
+                <Link to={item.to} className="hover:text-brand-600 hover:underline">
                   {item.label}
                 </Link>
               ) : (

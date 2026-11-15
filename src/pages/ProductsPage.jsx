@@ -9,6 +9,8 @@ import { usePageParams } from '../hooks/usePageParams'
 import { productService } from '../services/productService'
 import { getErrorMessage } from '../utils/errors'
 import { formatCurrency } from '../utils/format'
+import CsvExportButton from '../components/CsvExportButton'
+import FilterChips from '../components/FilterChips'
 import Badge from '../components/Badge'
 import ButtonLink from '../components/ButtonLink'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -21,26 +23,29 @@ import PriceDialog from '../components/PriceDialog'
 import SearchInput from '../components/SearchInput'
 import Spinner from '../components/Spinner'
 
-const BREADCRUMBS = [{ label: 'Dashboard', to: '/' }, { label: 'Productos' }]
+const BREADCRUMBS = [{ label: 'Dashboard', to: '/dashboard' }, { label: 'Productos' }]
 
 const buildColumns = ({ isAdmin, onDeactivate, onEditPrice }) => [
-  { key: 'codigo', header: 'Código', sortKey: 'codigo' },
-  { key: 'nombre', header: 'Producto', sortKey: 'nombre' },
+  { key: 'codigo', header: 'Código', sortKey: 'codigo', csv: (p) => p.codigo },
+  { key: 'nombre', header: 'Producto', sortKey: 'nombre', csv: (p) => p.nombre },
   {
     key: 'categoriaNombre',
     header: 'Categoría',
+    csv: (product) => product.categoriaNombre ?? '',
     render: (product) => product.categoriaNombre ?? 'Sin categoría',
   },
   {
     key: 'precioVenta',
     header: 'Precio de venta',
     sortKey: 'precioVenta',
+    csv: (product) => product.precioVenta,
     render: (product) => formatCurrency(product.precioVenta),
   },
-  { key: 'stockTotal', header: 'Stock', render: (product) => product.stockTotal ?? 0 },
+  { key: 'stockTotal', header: 'Stock', csv: (p) => p.stockTotal ?? 0, render: (product) => product.stockTotal ?? 0 },
   {
     key: 'activo',
     header: 'Estado',
+    csv: (product) => (product.activo ? 'Activo' : 'Inactivo'),
     render: (product) => (
       <Badge variant={product.activo ? 'success' : 'neutral'}>
         {product.activo ? 'Activo' : 'Inactivo'}
@@ -56,7 +61,7 @@ const buildColumns = ({ isAdmin, onDeactivate, onEditPrice }) => [
           to={`/products/${product.id}/variants`}
           title="Variantes y stock"
           aria-label={`Variantes y stock de ${product.nombre}`}
-          className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"
+          className="rounded-lg p-2 text-brand-600 hover:bg-brand-50"
         >
           <Layers size={16} />
         </Link>
@@ -131,8 +136,8 @@ export default function ProductsPage() {
     setSort(`${field},${direction}`)
   }
 
-  const handleToggleInactive = (event) => {
-    setShowInactive(event.target.checked)
+  const handleStatusFilter = (value) => {
+    setShowInactive(value === 'todos')
     setPage(1)
   }
 
@@ -199,15 +204,21 @@ export default function ProductsPage() {
   return (
     <section className="space-y-4">
       <PageHeader title="Productos" breadcrumbs={BREADCRUMBS}>
-        <label className="flex items-center gap-2 text-sm text-gray-600">
-          <input type="checkbox" checked={showInactive} onChange={handleToggleInactive} />
-          Mostrar inactivos
-        </label>
+        <FilterChips
+          label="Filtrar por estado"
+          value={showInactive ? 'todos' : 'activos'}
+          onChange={handleStatusFilter}
+          options={[
+            { value: 'activos', label: 'Activos' },
+            { value: 'todos', label: 'Todos' },
+          ]}
+        />
         <SearchInput
           value={search}
           onChange={setSearch}
           placeholder="Buscar por código o nombre"
         />
+        <CsvExportButton filename="productos.csv" columns={columns} rows={data?.content ?? []} />
         <ButtonLink to="/products/new">
           <Plus size={16} className="mr-1" />
           Nuevo producto

@@ -12,7 +12,7 @@ import SaleForm from '../components/SaleForm'
 import Spinner from '../components/Spinner'
 
 const BREADCRUMBS = [
-  { label: 'Dashboard', to: '/' },
+  { label: 'Dashboard', to: '/dashboard' },
   { label: 'Ventas', to: '/sales' },
   { label: 'Nueva venta' },
 ]
