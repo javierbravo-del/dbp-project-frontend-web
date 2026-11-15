@@ -11,9 +11,11 @@ import { getErrorMessage } from '../utils/errors'
 import Badge from '../components/Badge'
 import ButtonLink from '../components/ButtonLink'
 import ConfirmDialog from '../components/ConfirmDialog'
+import CsvExportButton from '../components/CsvExportButton'
 import DataTable from '../components/DataTable'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ErrorState'
+import FilterChips from '../components/FilterChips'
 import PageHeader from '../components/PageHeader'
 import Pagination from '../components/Pagination'
 import SearchInput from '../components/SearchInput'
@@ -21,16 +23,39 @@ import Spinner from '../components/Spinner'
 
 const BREADCRUMBS = [{ label: 'Dashboard', to: '/dashboard' }, { label: 'Clientes' }]
 
+const getDocumentType = (client) => (client.documento.length === 11 ? 'RUC' : 'DNI')
+
 const buildColumns = ({ isAdmin, onDelete }) => [
   {
     key: 'tipo',
     header: 'Tipo',
-    render: (client) => <Badge variant="neutral">{client.documento.length === 11 ? 'RUC' : 'DNI'}</Badge>,
+    csv: (client) => getDocumentType(client),
+    render: (client) => <Badge variant="neutral">{getDocumentType(client)}</Badge>,
   },
-  { key: 'documento', header: 'Documento', sortKey: 'documento' },
-  { key: 'nombre', header: 'Nombre', sortKey: 'nombre' },
-  { key: 'telefono', header: 'Teléfono', render: (client) => client.telefono ?? '—' },
-  { key: 'correo', header: 'Correo', render: (client) => client.correo ?? '—' },
+  {
+    key: 'documento',
+    header: 'Documento',
+    csv: (client) => client.documento,
+    sortKey: 'documento',
+  },
+  {
+    key: 'nombre',
+    header: 'Nombre',
+    csv: (client) => client.nombre,
+    sortKey: 'nombre',
+  },
+  {
+    key: 'telefono',
+    header: 'Teléfono',
+    csv: (client) => client.telefono ?? '',
+    render: (client) => client.telefono ?? '—',
+  },
+  {
+    key: 'correo',
+    header: 'Correo',
+    csv: (client) => client.correo ?? '',
+    render: (client) => client.correo ?? '—',
+  },
   {
     key: 'actions',
     header: 'Acciones',
@@ -67,6 +92,7 @@ export default function ClientsPage() {
   })
   const [clientToDelete, setClientToDelete] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [typeFilter, setTypeFilter] = useState('TODOS')
   const debouncedSearch = useDebounce(search, 300)
   const searchTerm = debouncedSearch.trim()
 
@@ -80,6 +106,11 @@ export default function ClientsPage() {
     () => buildColumns({ isAdmin, onDelete: setClientToDelete }),
     [isAdmin],
   )
+
+  const rows = useMemo(() => {
+    const all = data?.content ?? []
+    return typeFilter === 'TODOS' ? all : all.filter((client) => getDocumentType(client) === typeFilter)
+  }, [data, typeFilter])
 
   const handleSort = (field) => {
     const [currentField, currentDirection] = sort.split(',')
@@ -129,10 +160,18 @@ export default function ClientsPage() {
         />
       )
     }
+    if (rows.length === 0) {
+      return (
+        <EmptyState
+          title="Sin resultados"
+          description="Ningún cliente de esta página coincide con el filtro elegido."
+        />
+      )
+    }
     return (
       <DataTable
         columns={columns}
-        rows={data.content}
+        rows={rows}
         sort={sort}
         onSortChange={handleSort}
         isLoading={isLoading}
@@ -148,11 +187,23 @@ export default function ClientsPage() {
           onChange={setSearch}
           placeholder="Buscar por nombre o documento"
         />
+        <CsvExportButton filename="clientes.csv" columns={columns} rows={rows} />
         <ButtonLink to="/clients/new">
           <Plus size={16} className="mr-1" />
           Nuevo cliente
         </ButtonLink>
       </PageHeader>
+
+      <FilterChips
+        label="Filtrar por tipo de documento"
+        value={typeFilter}
+        onChange={setTypeFilter}
+        options={[
+          { value: 'TODOS', label: 'Todos' },
+          { value: 'DNI', label: 'Personas (DNI)' },
+          { value: 'RUC', label: 'Empresas (RUC)' },
+        ]}
+      />
 
       {renderContent()}
 
