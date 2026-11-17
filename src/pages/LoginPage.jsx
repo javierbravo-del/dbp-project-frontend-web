@@ -10,7 +10,7 @@ import AuthPanel from '../components/AuthPanel'
 import Logo from '../components/Logo'
 
 // Credenciales de la cuenta de demostración (datos ficticios, rol ADMIN).
-const DEMO_CREDENTIALS = { email: 'prueba@test.com', password: 'Prueba123' }
+const DEMO_CREDENTIALS = { email: 'prueba@test.com', password: 'Password1' }
 
 export default function LoginPage() {
   const { login, isAuthenticated } = useAuth()

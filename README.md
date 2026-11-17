@@ -4,21 +4,27 @@ Aplicación web de gestión para MYPES textiles de Gamarra. Permite administrar 
 
 **Curso:** CS 2031 Desarrollo Basado en Plataforma
 
-## Integrantes
+## Integrantes y participación
 
-- Javier Alonso Bravo Chávez
-- Gabriel Murillo Machicao
-- Indira Shian Yabar Ramos
-- Rafael Antonio Vargas Portocarrero
+| Integrante | Principales aportes en el frontend web | Participación |
+|---|---|---|
+| Javier Alonso Bravo Chávez | Cliente axios e interceptores, autenticación y rutas protegidas, layout y productos, formularios de producto, compras, ventas, dashboard, filtros y exportación CSV | 100 % |
+| Indira Shian Yábar Ramos | Renderizado de gráficos del asistente, portada (landing), modo claro/oscuro, rediseño del frontend, edición de variantes y ajuste de stock | 100 % |
+| Gabriel Murillo Machicao | Panel del asistente de IA e integración con el backend | 100 % |
+| Rafael Antonio Vargas Portocarrero | Despliegue del backend y de la base de datos que consume esta web, variables de entorno de producción | 100 % |
+| Héctor Sebastián Choque Dueñas | Órdenes de compra y de venta en el backend que consume esta web | 100 % |
+
+> Los commits firmados como `Acer` en el historial corresponden a **Indira Shian Yábar Ramos** (nombre por defecto del equipo en su computadora). Son, entre otros, `a31d37b`, `39aba95`, `b4af71e` y `41f260d`, además del merge del PR #33.
 
 ## Enlaces
 
 | Componente | URL |
 |---|---|
-| Web (producción) | <http://localhost:3000/> |
-| Backend (API) | <URL del backend desplegado> |
-| Repositorio backend | <https://github.com/rafavp03/dbp-project-backend.git> |
-| Aplicación móvil | <URL o enlace de Expo> |
+| Web (producción) | <https://gamarrito-erp.vercel.app> |
+| Backend (API) | <https://gamarrito-backend.up.railway.app/api/v1> |
+| Repositorio backend | <https://github.com/rafavp03/dbp-project-backend> |
+| Repositorio móvil | <https://github.com/rafavp03/project-mobile> |
+| Aplicación móvil (build de prueba) | <PEGAR AQUI el enlace de la build en expo.dev> |
 
 ## Funcionalidades
 
@@ -109,7 +115,7 @@ src/
 
 | Rol | Correo | Contraseña |
 |---|---|---|
-| ADMIN | <prueba@test.com> | <Prueba123> |
+| ADMIN | <prueba@test.com> | <Password1> |
 | EMPLEADO | <empleado@test.com> | <Empleado123> |
 
 ## Notas
