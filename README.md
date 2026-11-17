@@ -24,7 +24,7 @@ Aplicación web de gestión para MYPES textiles de Gamarra. Permite administrar 
 | Backend (API) | <https://gamarrito-backend.up.railway.app/api/v1> |
 | Repositorio backend | <https://github.com/rafavp03/dbp-project-backend> |
 | Repositorio móvil | <https://github.com/rafavp03/project-mobile> |
-| Aplicación móvil (build de prueba) | <PEGAR AQUI el enlace de la build en expo.dev> |
+| Aplicación móvil (build de prueba) | <https://expo.dev/accounts/gabrielmurilloo/projects/gamarrito-mobile/builds/2d1cd75b-5af0-4aee-8c8b-c3621efadca2> |
 
 ## Funcionalidades
 
