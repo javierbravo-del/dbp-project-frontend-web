@@ -115,9 +115,7 @@ src/
 
 | Rol | Correo | Contraseña |
 |---|---|---|
-| ADMIN | <prueba@test.com> | <Prueba123> |
-| EMPLEADO | <empleado@test.com> | <Empleado123> |
-
+| ADMIN | <prueba@test.com> | `Password1` |
 ## Notas
 
 - El asistente IA tiene un límite de 30 consultas diarias por usuario y depende de la cuota del proveedor de IA configurado en el backend.
