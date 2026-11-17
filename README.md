@@ -6,13 +6,13 @@ Aplicación web de gestión para MYPES textiles de Gamarra. Permite administrar 
 
 ## Integrantes y participación
 
-| Integrante | Principales aportes en el frontend web | Participación |
+| Integrante | Aportes en el proyecto | Participación |
 |---|---|---|
-| Javier Alonso Bravo Chávez | Cliente axios e interceptores, autenticación y rutas protegidas, layout y productos, formularios de producto, compras, ventas, dashboard, filtros y exportación CSV | 100 % |
-| Indira Shian Yábar Ramos | Renderizado de gráficos del asistente, portada (landing), modo claro/oscuro, rediseño del frontend, edición de variantes y ajuste de stock | 100 % |
-| Gabriel Murillo Machicao | Panel del asistente de IA e integración con el backend | 100 % |
-| Rafael Antonio Vargas Portocarrero | Despliegue del backend y de la base de datos que consume esta web, variables de entorno de producción | 100 % |
-| Héctor Sebastián Choque Dueñas | Órdenes de compra y de venta en el backend que consume esta web | 100 % |
+| Rafael Antonio Vargas Portocarrero | **Backend:** catálogo, inventario, reportes y asistente de IA (Spring AI + Gemini). **Móvil:** la aplicación completa (React Native + Expo), escáner, ubicación y clima. **Despliegue:** AWS EC2, Railway y EAS | 100 % |
+| Javier Alonso Bravo Chávez | **Backend:** empresa, proveedores, categorías y clientes. **Web:** cliente axios e interceptores, autenticación y rutas, layout, catálogo, compras, ventas, dashboard, filtros y exportación CSV | 100 % |
+| Gabriel Murillo Machicao | **Backend:** asistente de IA, categorías y apoyo en autenticación. **Móvil:** integración del asistente | 100 % |
+| Indira Shian Yábar Ramos | **Backend:** usuarios y seguridad (JWT, `JwtService`, `AuthController`). **Web:** renderizado de gráficos del asistente, portada, modo claro/oscuro, rediseño, edición de variantes y ajuste de stock | 100 % |
+| Héctor Sebastián Choque Dueñas | **Backend:** órdenes de compra y órdenes de venta con sus detalles | 100 % |
 
 > Los commits firmados como `Acer` en el historial corresponden a **Indira Shian Yábar Ramos** (nombre por defecto del equipo en su computadora). Son, entre otros, `a31d37b`, `39aba95`, `b4af71e` y `41f260d`, además del merge del PR #33.
 
@@ -115,7 +115,7 @@ src/
 
 | Rol | Correo | Contraseña |
 |---|---|---|
-| ADMIN | <prueba@test.com> | <Password1> |
+| ADMIN | <prueba@test.com> | <Prueba123> |
 | EMPLEADO | <empleado@test.com> | <Empleado123> |
 
 ## Notas
