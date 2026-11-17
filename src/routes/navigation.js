@@ -1,4 +1,4 @@
-import { ClipboardList, UserCog, LayoutDashboard, Package, ShoppingCart, Tags, Truck, Users } from 'lucide-react'
+import { Bot, ClipboardList, UserCog, LayoutDashboard, Package, ShoppingCart, Tags, Truck, Users } from 'lucide-react'
 
 export const NAV_GROUPS = [
   {
@@ -7,6 +7,7 @@ export const NAV_GROUPS = [
       { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
       { to: '/sales', label: 'Ventas', icon: ShoppingCart },
       { to: '/purchases', label: 'Compras', icon: ClipboardList },
+      { to: '/assistant', label: 'Asistencia virtual', icon: Bot },
     ],
   },
   {
