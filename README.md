@@ -49,8 +49,8 @@ React 19 · Vite · Tailwind CSS v4 · React Router · Axios · React Hook Form 
 ## Instalación y ejecución local
 
 ```bash
-git clone <URL del repositorio>
-cd dpb-project-frontend-web
+git clone https://github.com/javierbravo-del/dbp-project-frontend-web.git
+cd dbp-project-frontend-web
 npm install
 cp .env.example .env
 npm run dev
